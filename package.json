@@ -7,7 +7,8 @@
     "start": "TS_NODE_PROJECT=tsconfig.json webpack --config ./config/webpack/webpack.development.ts",
     "build": "TS_NODE_PROJECT=tsconfig.json webpack --config ./config/webpack/webpack.production.ts",
     "lint": "eslint --ext .js --ext .ts .",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "gql:gen": "graphql-codegen --config codegen.yml"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,11 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
+    "@graphql-codegen/cli": "1.20.0",
+    "@graphql-codegen/introspection": "1.18.1",
+    "@graphql-codegen/typescript": "1.20.0",
+    "@graphql-codegen/typescript-operations": "^1.17.13",
+    "@graphql-codegen/typescript-resolvers": "^1.18.1",
     "@types/webpack-env": "^1.16.0",
     "@types/webpack-node-externals": "^2.5.0",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
@@ -46,6 +52,7 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
+    "@graphql-codegen/cli": "^1.20.0",
     "apollo-server": "^2.19.1",
     "graphql": "^15.4.0"
   }

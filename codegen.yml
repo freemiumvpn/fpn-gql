@@ -1,0 +1,12 @@
+overwrite: true
+schema:
+  - "src/**/*.gql"
+  - "src/**/*.grapqhl"
+generates:
+  generated/gql/index.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+      - typescript-operations
+config:
+  nonOptionalTypename: true
