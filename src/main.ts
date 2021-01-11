@@ -1,27 +1,16 @@
-import { ApolloServer } from 'apollo-server'
+import { ApolloServer, IResolvers } from 'apollo-server'
 import { gql } from 'apollo-server'
 
+import accountConfig from './modules/account/account.config'
+
 const resolvers = {
-  Query: {
-    testMessage: (): string => 'Hello World!',
-  },
-}
+  ...accountConfig.resolvers,
+} as IResolvers
 
 const typeDefs = gql`
-  type Query {
-    """
-    Test Message.
-    """
-    testMessage: String!
-  }
+  ${accountConfig.gql}
 `
 
 const server = new ApolloServer({ resolvers, typeDefs })
 
-server.listen().then(({ url }) => console.log(`Server ready at ${url}. `))
-
-// Hot Module Replacement
-if (module.hot) {
-  module.hot.accept()
-  module.hot.dispose(() => console.log('Module disposed. '))
-}
+server.listen().then(({ url }) => console.log(`🚀 Server ready at ${url}. `))
