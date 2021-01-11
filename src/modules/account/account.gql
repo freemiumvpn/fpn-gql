@@ -4,6 +4,6 @@ type Account {
   lastName: String!
 }
 
-extend type Query {
+type Query {
   accountById(uuid: String!): Account!
 }

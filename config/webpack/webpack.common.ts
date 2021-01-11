@@ -2,6 +2,7 @@ import path from 'path'
 
 import { Configuration } from 'webpack'
 
+import gqlRule from './rules/gqlRules'
 import jsRule from './rules/jsRules'
 import createWebpackPaths from './utils/createWebpackPaths'
 
@@ -10,13 +11,11 @@ const paths = createWebpackPaths(PATH_ROOT)
 
 const config: Configuration = {
   module: {
-    rules: [jsRule],
+    rules: [jsRule, gqlRule],
   },
   output: {
-    chunkFilename: 'chunk.[name].[contenthash].js',
     path: paths.build,
-    filename: '[name].[hash].js',
-    publicPath: '/',
+    filename: 'server.js',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', 'jsx'],
