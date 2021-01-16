@@ -7,15 +7,17 @@
     "gql": "graphql-codegen --config codegen.yml",
     "lint": "eslint --ext .js --ext .ts .",
     "lint:fix": "npm run lint -- --fix",
-    "serve": "nodemon ./dist/server",
-    "start": "concurrently \"npm run build:dev\" \"npm run serve\"",
+    "serve": "node ./dist/server",
+    "serve:dev": "nodemon ./dist/server",
+    "start": "concurrently \"npm run build:dev\" \"npm run serve:dev\"",
     "test": "jest --no-coverage",
     "test:watch": "jest --watch --no-coverage",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "apollo-server": "^2.19.1",
-    "graphql": "^15.4.0"
+    "graphql": "^15.4.0",
+    "rxjs": "^6.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -54,7 +56,6 @@
     "nodemon": "^2.0.7",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.2.1",
-    "rxjs": "^6.6.3",
     "ts-loader": "^8.0.14",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
