@@ -1,9 +1,6 @@
 name: Release builds
 
-on:
-  push:
-    branches:
-      - main
+on: push
 
 jobs:
   build:
