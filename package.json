@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:dev": "webpack --config ./config/webpack/webpack.development.ts",
-    "build:prod": "webpack --config ./config/webpack/webpack.production.ts",
+    "build": "webpack --config ./config/webpack/webpack.production.ts",
     "serve": "nodemon ./dist/server",
     "start": "concurrently \"npm run build:dev\" \"npm run serve\"",
     "lint": "eslint --ext .js --ext .ts .",
