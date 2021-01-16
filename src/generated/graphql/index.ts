@@ -3,7 +3,6 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -13,22 +12,14 @@ export type Scalars = {
   Float: number;
 };
 
-export type Account = {
-  __typename: 'Account';
-  uuid: Scalars['ID'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-};
-
 export type Query = {
   __typename: 'Query';
-  accountById: Account;
   ping: Scalars['String'];
 };
 
-
-export type QueryAccountByIdArgs = {
-  uuid: Scalars['String'];
+export type Subscribe = {
+  __typename: 'Subscribe';
+  ping: Scalars['String'];
 };
 
 
@@ -109,37 +100,32 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Account: ResolverTypeWrapper<Account>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
+  String: ResolverTypeWrapper<Scalars['String']>;
+  Subscribe: ResolverTypeWrapper<Subscribe>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Account: Account;
-  ID: Scalars['ID'];
-  String: Scalars['String'];
   Query: {};
+  String: Scalars['String'];
+  Subscribe: Subscribe;
   Boolean: Scalars['Boolean'];
 };
 
-export type AccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account']> = {
-  uuid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  accountById?: Resolver<ResolversTypes['Account'], ParentType, ContextType, RequireFields<QueryAccountByIdArgs, 'uuid'>>;
   ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
+export type SubscribeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscribe'] = ResolversParentTypes['Subscribe']> = {
+  ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
-  Account?: AccountResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Subscribe?: SubscribeResolvers<ContextType>;
 };
 
 
