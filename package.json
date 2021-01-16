@@ -7,8 +7,9 @@
     "gql": "graphql-codegen --config codegen.yml",
     "lint": "eslint --ext .js --ext .ts .",
     "lint:fix": "npm run lint -- --fix",
-    "serve": "nodemon ./dist/server",
-    "start": "concurrently \"npm run build:dev\" \"npm run serve\"",
+    "serve": "node ./dist/server",
+    "serve:dev": "nodemon ./dist/server",
+    "start": "concurrently \"npm run build:dev\" \"npm run serve:dev\"",
     "test": "jest --no-coverage",
     "test:watch": "jest --watch --no-coverage",
     "test:coverage": "jest --coverage"
