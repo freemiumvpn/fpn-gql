@@ -18,7 +18,7 @@ const config: Configuration = {
     filename: 'server.js',
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', 'jsx'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx', '.graphql', '.gql'],
   },
   target: 'node12.14',
 }

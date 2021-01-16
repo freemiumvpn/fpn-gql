@@ -1,0 +1,7 @@
+type Query {
+  ping: String!
+}
+
+type Subscribe {
+  ping: String!
+}
