@@ -1,0 +1,9 @@
+type Account {
+  uuid: ID!
+  firstName: String!
+  lastName: String!
+}
+
+type Query {
+  accountById(uuid: String!): Account!
+}
