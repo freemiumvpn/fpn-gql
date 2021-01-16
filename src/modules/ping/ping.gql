@@ -2,6 +2,6 @@ type Query {
   ping: String!
 }
 
-type Subscribe {
+type Subscription {
   ping: String!
 }

@@ -17,8 +17,8 @@ export type Query = {
   ping: Scalars['String'];
 };
 
-export type Subscribe = {
-  __typename: 'Subscribe';
+export type Subscription = {
+  __typename: 'Subscription';
   ping: Scalars['String'];
 };
 
@@ -102,7 +102,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Subscribe: ResolverTypeWrapper<Subscribe>;
+  Subscription: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -110,7 +110,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {};
   String: Scalars['String'];
-  Subscribe: Subscribe;
+  Subscription: {};
   Boolean: Scalars['Boolean'];
 };
 
@@ -118,14 +118,13 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
-export type SubscribeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscribe'] = ResolversParentTypes['Subscribe']> = {
-  ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  ping?: SubscriptionResolver<ResolversTypes['String'], "ping", ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
-  Subscribe?: SubscribeResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
 };
 
 

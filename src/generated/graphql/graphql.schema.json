@@ -4,7 +4,9 @@
       "name": "Query"
     },
     "mutationType": null,
-    "subscriptionType": null,
+    "subscriptionType": {
+      "name": "Subscription"
+    },
     "types": [
       {
         "kind": "OBJECT",
@@ -45,7 +47,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "Subscribe",
+        "name": "Subscription",
         "description": null,
         "fields": [
           {
