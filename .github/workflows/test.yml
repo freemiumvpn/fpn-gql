@@ -20,12 +20,3 @@ jobs:
         run: npm run test
       - name: build
         run: npm run build
-      - name: serve
-        run: |
-          npm run serve &
-          curl 'http://localhost:4000' \
-            -H 'content-type: application/json' \
-            --retry 2 \
-            --retry-delay 1 \
-            --data-binary '{"operationName":"test","variables":{},"query":"query test {\n  ping\n}\n"}' \
-            --compressed
