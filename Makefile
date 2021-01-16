@@ -19,7 +19,6 @@ SHA8=$(shell echo $(GITHUB_SHA) | cut -c1-8)
 
 docker-image:
 	docker build --rm \
-		--build-arg SERVICE=$(SERVICE) \
 		--tag $(DOCKER_REPOSITORY):local \
 		.
 
@@ -29,7 +28,6 @@ ci-docker-auth:
 
 ci-docker-build:
 	@docker build --rm \
-		--build-arg SERVICE=$(SERVICE) \
 		--tag $(DOCKER_REPOSITORY):$(SHA8) \
 		--tag $(DOCKER_REPOSITORY):latest .
 

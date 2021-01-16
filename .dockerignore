@@ -1,0 +1,8 @@
+
+README.*
+.github
+
+Dockerfile
+
+bin
+node_modules
