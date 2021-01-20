@@ -1,6 +1,7 @@
 import path from 'path'
 
 import { Configuration } from 'webpack'
+import DotEnv from 'dotenv-webpack'
 
 import gqlRule from './rules/gqlRules'
 import jsRule from './rules/jsRules'
@@ -21,6 +22,13 @@ const config: Configuration = {
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.graphql', '.gql'],
   },
   target: 'node12.14',
+  plugins: [
+    new DotEnv({
+      safe: true, // load '.env.example' to verify
+      allowEmptyValues: false,
+      silent: false,
+    }),
+  ],
 }
 
 export default config

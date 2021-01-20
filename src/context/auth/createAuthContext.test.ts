@@ -1,16 +1,49 @@
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 
-import createAuthContext, { AuthError, ContextAuth } from './auth'
+import { AuthError } from './authError'
+import createAuthContext, {
+  ContextAuth,
+  CreateAuthContextOptions,
+} from './createAuthContext'
 
-describe('Auth Context', () => {
-  const options = {
-    secret: 'foo',
+describe('createAuthContext', () => {
+  const options: CreateAuthContextOptions = {
     audience: 'baz',
     issuer: 'http://gizmodo',
     algorithms: ['HS256' as Algorithm],
-    intercept: jest.fn(),
+    secret: 'foo',
+    publicKey: jest.fn(),
   }
+
+  it('should check for secret or public key', async () => {
+    const options = {
+      audience: 'baz',
+      issuer: 'http://gizmodo',
+      algorithms: ['HS256' as Algorithm],
+    }
+
+    const expressContext = {
+      req: {
+        method: 'OPTIONS',
+        headers: {
+          'access-control-request-headers': 'foo, baz,  authorization',
+        },
+      },
+    }
+
+    const context = await createAuthContext(options)(
+      expressContext as ExpressContext
+    )
+
+    const expected: ContextAuth = {
+      error: {
+        type: AuthError.AUTHORIZATION_NO_SECRET_OR_PUBLIC_KEY_FOUND,
+      },
+    }
+
+    expect(context).toEqual(expected)
+  })
 
   it('should skip CORS checks', async () => {
     const expressContext = {
@@ -123,13 +156,12 @@ describe('Auth Context', () => {
     expect(context).toEqual(expected)
   })
 
-  it('should be able to intercept token', async () => {
-    const options = {
-      secret: 'foo',
+  it('should be able to resolve public key', async () => {
+    const options: CreateAuthContextOptions = {
       audience: 'baz',
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
-      intercept: jest.fn(),
+      publicKey: jest.fn(),
     }
 
     const expressContext = {
@@ -142,17 +174,17 @@ describe('Auth Context', () => {
 
     await createAuthContext(options)(expressContext as ExpressContext)
 
-    expect(options.intercept.mock.calls.length).toEqual(1)
+    expect((options.publicKey as jest.Mock).mock.calls.length).toEqual(1)
   })
 
-  it('should be able to check intercept errors', async () => {
-    const options = {
+  it('should be able to check public key errors', async () => {
+    const options: CreateAuthContextOptions = {
       secret: 'foo',
       audience: 'baz',
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
-      intercept: jest.fn().mockImplementation(() => {
-        throw new Error('Interceptor error')
+      publicKey: jest.fn().mockImplementation(() => {
+        throw new Error('Public key fetch error')
       }),
     }
 
@@ -170,15 +202,86 @@ describe('Auth Context', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_INTERCEPTOR_FAILED,
-        hint: 'The provided interceptor has failed',
+        type: AuthError.AUTHORIZATION_PUBLIC_KEY_FETCH_FAILED,
+        hint: 'Failed to get secret from public key',
       },
     }
 
-    expect(options.intercept.mock.calls.length).toEqual(1)
+    expect((options.publicKey as jest.Mock).mock.calls.length).toEqual(1)
     expect(context.error.type).toEqual(expected.error.type)
     expect(context.error.hint).toEqual(expected.error.hint)
     expect(context.error.source).toBeTruthy()
+  })
+
+  it('should verify toke against secret', async () => {
+    const options: CreateAuthContextOptions = {
+      secret: 'foo',
+      audience: 'baz',
+      issuer: 'http://gizmo',
+      algorithms: ['HS256' as Algorithm],
+      publicKey: jest.fn().mockImplementation(() => {
+        return 'foo'
+      }),
+    }
+
+    const incorrectSecret = 'baz'
+    const token = jwt.sign({ foo: 'bar' }, incorrectSecret)
+
+    const expressContext = {
+      req: {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      },
+    }
+
+    const context = await createAuthContext(options)(
+      expressContext as ExpressContext
+    )
+
+    const expected: ContextAuth = {
+      error: {
+        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        source: '{"name":"JsonWebTokenError","message":"invalid signature"}',
+      },
+    }
+
+    expect(context).toEqual(expected)
+  })
+
+  it.only('should check secret resolution', async () => {
+    const options: CreateAuthContextOptions = {
+      audience: 'baz',
+      issuer: 'http://gizmo',
+      algorithms: ['HS256' as Algorithm],
+      publicKey: jest.fn().mockImplementation(() => {
+        return void 0
+      }),
+    }
+
+    const incorrectSecret = 'baz'
+    const token = jwt.sign({ foo: 'bar' }, incorrectSecret)
+
+    const expressContext = {
+      req: {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      },
+    }
+
+    const context = await createAuthContext(options)(
+      expressContext as ExpressContext
+    )
+
+    const expected: ContextAuth = {
+      error: {
+        type: AuthError.AUTHORIZATION_NO_SECRET_FOUND,
+        hint: 'Unable to resolve secret from options or public key',
+      },
+    }
+
+    expect(context).toEqual(expected)
   })
 
   it('should verify token', async () => {
@@ -205,6 +308,16 @@ describe('Auth Context', () => {
   })
 
   it('should verify toke against secret', async () => {
+    const options: CreateAuthContextOptions = {
+      secret: 'foo',
+      audience: 'baz',
+      issuer: 'http://gizmo',
+      algorithms: ['HS256' as Algorithm],
+      publicKey: jest.fn().mockImplementation(() => {
+        return 'foo'
+      }),
+    }
+
     const incorrectSecret = 'baz'
     const token = jwt.sign({ foo: 'bar' }, incorrectSecret)
 
@@ -232,7 +345,7 @@ describe('Auth Context', () => {
 
   it('should check if token is expired', async () => {
     const exp = new Date('1970-12-12').getTime() / 1000
-    const token = jwt.sign({ foo: 'bar', exp }, options.secret)
+    const token = jwt.sign({ foo: 'bar', exp }, options.secret as string)
 
     const expressContext = {
       req: {
@@ -261,7 +374,7 @@ describe('Auth Context', () => {
     const incorrectAudience = 'gizmo'
     const token = jwt.sign(
       { foo: 'bar', aud: incorrectAudience },
-      options.secret
+      options.secret as string
     )
 
     const expressContext = {
@@ -291,7 +404,7 @@ describe('Auth Context', () => {
     const incorrectIssuer = 'http://gizmo'
     const token = jwt.sign(
       { foo: 'bar', aud: options.audience, iss: incorrectIssuer },
-      options.secret
+      options.secret as string
     )
 
     const expressContext = {
@@ -320,7 +433,7 @@ describe('Auth Context', () => {
   it('should return token', async () => {
     const token = jwt.sign(
       { foo: 'bar', aud: options.audience, iss: options.issuer },
-      options.secret
+      options.secret as string
     )
 
     const expressContext = {

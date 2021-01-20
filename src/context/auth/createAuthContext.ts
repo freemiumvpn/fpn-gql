@@ -2,15 +2,7 @@ import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 import jwtExpress from 'express-jwt'
 
-export enum AuthError {
-  NONE = 'NONE',
-  AUTHORIZATION_HEADER_NOT_FOUND = 'AUTHORIZATION_HEADER_NOT_FOUND',
-  AUTHORIZATION_HEADER_MALFORMED = 'AUTHORIZATION_HEADER_MALFORMED',
-  AUTHORIZATION_AUTH_TYPE_INVALID = 'AUTHORIZATION_AUTH_TYPE_INVALID',
-  AUTHORIZATION_FAILED_TO_DECODE_TOKEN = 'AUTHORIZATION_FAILED_TO_DECODE_TOKEN',
-  AUTHORIZATION_TOKEN_VERIFICATION_FAILED = 'AUTHORIZATION_TOKEN_VERIFICATION_FAILED',
-  AUTHORIZATION_INTERCEPTOR_FAILED = 'AUTHORIZATION_INTERCEPTOR_FAILED',
-}
+import { AuthError } from './authError'
 
 interface Error {
   type: AuthError
@@ -20,23 +12,36 @@ interface Error {
 
 export interface ContextAuth {
   error: Error
-  token?: string | { [key: string]: any }
+  token?: string
 }
 
-interface AuthContextOptions {
-  secret: jwtExpress.secretType
+export interface CreateAuthContextOptions {
   audience: string
-  issuer: string
+  /**
+   * @deprecated
+   * seems like issuer is not needed
+   * for the jwt.verify stage?
+   */
+  issuer?: string
   algorithms: Algorithm[]
-  intercept?: (
+  secret?: jwtExpress.secretType
+  publicKey?: (
     context: ExpressContext,
     decodedToken: string | { [key: string]: any }
-  ) => Promise<void>
+  ) => Promise<jwtExpress.secretType>
 }
 
-const createAuthContext = (options: AuthContextOptions) => async (
+const createAuthContext = (options: CreateAuthContextOptions) => async (
   context: ExpressContext
 ): Promise<ContextAuth> => {
+  if (!options.secret && !options.publicKey) {
+    return {
+      error: {
+        type: AuthError.AUTHORIZATION_NO_SECRET_OR_PUBLIC_KEY_FOUND,
+      },
+    }
+  }
+
   /**
    * Skip CORS
    */
@@ -98,23 +103,35 @@ const createAuthContext = (options: AuthContextOptions) => async (
     }
   }
 
-  if (options.intercept) {
+  /**
+   * Resolve Secret
+   */
+  let secret = options.secret
+  if (options.publicKey) {
     try {
-      await options.intercept(context, decodedToken)
+      secret = await options.publicKey(context, decodedToken)
     } catch (error) {
       return {
         error: {
-          type: AuthError.AUTHORIZATION_INTERCEPTOR_FAILED,
-          hint: 'The provided interceptor has failed',
+          type: AuthError.AUTHORIZATION_PUBLIC_KEY_FETCH_FAILED,
+          hint: 'Failed to get secret from public key',
           source: error,
         },
       }
     }
   }
 
+  if (!secret) {
+    return {
+      error: {
+        type: AuthError.AUTHORIZATION_NO_SECRET_FOUND,
+        hint: 'Unable to resolve secret from options or public key',
+      },
+    }
+  }
+
   try {
-    jwt.verify(token, options.secret, {
-      issuer: options.issuer,
+    jwt.verify(token, secret, {
       algorithms: options.algorithms,
       audience: options.audience,
     })
@@ -131,7 +148,7 @@ const createAuthContext = (options: AuthContextOptions) => async (
     error: {
       type: AuthError.NONE,
     },
-    token: decodedToken,
+    token,
   }
 }
 
