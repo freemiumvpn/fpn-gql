@@ -12,11 +12,18 @@ jobs:
             node-version: 12.x
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Install
         run: npm ci
+
+      - name: Mock Env file
+        run: cp .env.example .env
+
       - name: Lint
         run: npm run lint
+
       - name: test
         run: npm run test
+
       - name: build
         run: npm run build
