@@ -1,9 +1,9 @@
-name: Test builds
+name: Test Builds
 
 on: push
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
