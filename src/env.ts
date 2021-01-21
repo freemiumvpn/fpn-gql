@@ -4,6 +4,12 @@ import dotenv from 'dotenv'
 
 import memoise from './utils/memoise'
 
+/**
+ * process.env is made available through
+ * webpack externals
+ */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const processEnv = require('processEnv')
 const PATH_ROOT = path.resolve(__dirname, '..')
 
 enum EnvVar {
@@ -51,7 +57,7 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
       path: `${rootPath}/.env`,
     }).parsed || {}
 
-  const env = parseEnv(process.env, Object.keys(envConfig)) as Record<
+  const env = parseEnv(processEnv, Object.keys(envConfig)) as Record<
     EnvVar,
     string
   >
