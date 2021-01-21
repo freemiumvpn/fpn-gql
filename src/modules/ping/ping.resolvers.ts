@@ -1,6 +1,7 @@
 import { interval } from 'rxjs'
 import { map } from 'rxjs/operators'
 
+import { ContextApp } from '../../context/createContext'
 import { Resolvers } from '../../generated/graphql'
 import observableToIterator from '../../utils/observableToIterator'
 
@@ -10,9 +11,11 @@ const createPing = (ping: number) =>
 const ONE_SECOND = 1000
 const interval$ = interval(ONE_SECOND).pipe(map((ping) => createPing(ping)))
 
-const pingResolvers: Resolvers = {
+const pingResolvers: Resolvers<ContextApp> = {
   Query: {
-    ping: (): string => createPing(1),
+    ping: (): string => {
+      return createPing(1)
+    },
   },
   Subscription: {
     ping: {
