@@ -12,7 +12,7 @@ describe('Ping Resolvers', () => {
         pingResolvers.Query.ping &&
         (pingResolvers.Query as Record<'ping', () => Ping>).ping()
 
-      expect(value).toMatch('PING OK')
+      expect(value?.message).toMatch('OK')
     })
   })
 
@@ -36,13 +36,13 @@ describe('Ping Resolvers', () => {
         argument,
         context,
         info as GraphQLResolveInfo
-      ) as AsyncIterator<unknown, unknown, undefined>
+      ) as AsyncIterator<Ping, Ping, undefined>
 
       const iteratorEvent = await iterator.next()
-      const expected = 'PING OK'
+      const expected = 'OK'
 
       expect(iteratorEvent.done).toEqual(false)
-      expect(iteratorEvent.value).toMatch(expected)
+      expect(iteratorEvent.value.message).toMatch(expected)
     })
 
     it('should resolve ping', () => {
