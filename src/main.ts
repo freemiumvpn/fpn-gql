@@ -1,3 +1,5 @@
+import { createServer } from 'http'
+
 import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
@@ -15,13 +17,16 @@ const PORT = port || 4000
 const expressLogger = expressPino({ logger, level: LoggerLevel.ERROR })
 
 const app = express()
+const ws = createServer(app)
 
 app.use(bodyParser.json())
 app.use(expressLogger)
 
 const server = new ApolloServer(appConfig)
 server.applyMiddleware({ app })
+server.installSubscriptionHandlers(ws)
 
-app.listen({ port: PORT }, () => {
-  logger.info(`Server ready at http://localhost:${PORT}${server.graphqlPath}. `)
+ws.listen({ port: PORT }, () => {
+  logger.info(`GraphQL API URL: http://localhost:${PORT}${server.graphqlPath}`)
+  logger.info(`Subscriptions URL: ws://localhost:${PORT}${server.graphqlPath}`)
 })

@@ -46,6 +46,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
    * Skip CORS
    */
   if (
+    context.req &&
     context.req.method === 'OPTIONS' &&
     context.req.headers['access-control-request-headers'] &&
     context.req.headers['access-control-request-headers']
@@ -59,7 +60,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
     }
   }
 
-  const authorizationHeader = context.req.headers.authorization
+  const authorizationHeader = context.req && context.req.headers.authorization
   if (!authorizationHeader) {
     return {
       error: {
