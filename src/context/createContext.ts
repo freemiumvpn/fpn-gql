@@ -1,13 +1,16 @@
+import pino from 'pino'
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jsonWebKeySet from 'jwks-rsa'
 
 import getEnv from '../env'
+import { logger } from '../logger'
 
 import createAuthContext, { ContextAuth } from './auth/createAuthContext'
 import createPublicKeyHandler from './auth/createPublicKeyHandler'
 
 export interface ContextApp {
   auth: ContextAuth
+  logger: pino.Logger
 }
 
 const createContext = async (context: ExpressContext): Promise<ContextApp> => {
@@ -27,6 +30,7 @@ const createContext = async (context: ExpressContext): Promise<ContextApp> => {
 
   return {
     auth,
+    logger,
   }
 }
 

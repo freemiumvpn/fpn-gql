@@ -1,17 +1,11 @@
 import { gql, IResolvers } from 'apollo-server-express'
-import { DocumentNode } from 'graphql'
-import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
+import { ApolloServerExpressConfig } from 'apollo-server-express/dist/ApolloServer'
 
 import pingModule from './modules/ping/ping.module'
-import createContext, { ContextApp } from './context/createContext'
+import createContext from './context/createContext'
+import { logger } from './logger'
 
-interface App {
-  resolvers: IResolvers<unknown, ContextApp>
-  typeDefs: DocumentNode
-  context: (context: ExpressContext) => Promise<ContextApp>
-}
-
-const app: App = {
+const appConfig: ApolloServerExpressConfig = {
   resolvers: {
     ...pingModule.resolvers,
   } as IResolvers,
@@ -19,6 +13,7 @@ const app: App = {
     ${pingModule.typeDefs}
   `,
   context: createContext,
+  logger,
 }
 
-export { app as default }
+export { appConfig }
