@@ -11,6 +11,7 @@
     "serve:dev": "nodemon ./dist/server",
     "start": "concurrently \"npm run build:dev\" \"npm run serve:dev\"",
     "test": "jest --no-coverage",
+    "test:types": "tsc --noEmit",
     "test:watch": "jest --watch --no-coverage",
     "test:coverage": "jest --coverage"
   },

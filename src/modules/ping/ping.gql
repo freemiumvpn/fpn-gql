@@ -1,7 +1,13 @@
+type Ping {
+  date: String!
+  count: Int!
+  message: String!
+}
+
 type Query {
-  ping: String!
+  ping: Ping!
 }
 
 type Subscription {
-  ping: String!
+  ping: Ping!
 }

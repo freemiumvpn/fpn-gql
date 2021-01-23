@@ -9,6 +9,7 @@ ADD . /work_dir/
 
 RUN cp .env.example .env
 RUN npm run lint
+RUN npm run test:types
 RUN npm run test
 RUN npm run build
 

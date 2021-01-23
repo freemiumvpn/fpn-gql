@@ -19,7 +19,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Docker Build & Push
+      - name: Docker Build
         run: make ci-docker-build
       - name: Docker Clean up
         run: rm -rf /home/runner/.docker/config.json
