@@ -4,7 +4,7 @@ type PromiseResolve<T> = (value: IteratorResult<T>) => void
 
 function observableToIterator<T>(
   $: Observable<T>,
-  handleError: (e: unknown) => void
+  handleError: (e: Record<string, unknown>) => void
 ): AsyncIterator<T> {
   const queue: IteratorResult<T>[] = []
   const deadLetterQueue: PromiseResolve<T>[] = []
@@ -28,7 +28,7 @@ function observableToIterator<T>(
     })
   }
 
-  const onError = (e: unknown) => {
+  const onError = (e: Record<string, unknown>) => {
     handleError(e)
   }
 

@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql'
 
-import { SubscriptionObject } from '../../generated/graphql'
+import { Ping, SubscriptionObject } from '../../generated/graphql'
 
 import pingResolvers from './ping.resolvers'
 
@@ -10,7 +10,7 @@ describe('Ping Resolvers', () => {
       const value =
         pingResolvers.Query &&
         pingResolvers.Query.ping &&
-        (pingResolvers.Query as Record<'ping', () => string>).ping()
+        (pingResolvers.Query as Record<'ping', () => Ping>).ping()
 
       expect(value).toMatch('PING OK')
     })

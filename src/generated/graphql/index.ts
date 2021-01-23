@@ -12,14 +12,21 @@ export type Scalars = {
   Float: number;
 };
 
+export type Ping = {
+  __typename: 'Ping';
+  date: Scalars['String'];
+  count: Scalars['Int'];
+  message: Scalars['String'];
+};
+
 export type Query = {
   __typename: 'Query';
-  ping: Scalars['String'];
+  ping: Ping;
 };
 
 export type Subscription = {
   __typename: 'Subscription';
-  ping: Scalars['String'];
+  ping: Ping;
 };
 
 
@@ -100,29 +107,41 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Query: ResolverTypeWrapper<{}>;
+  Ping: ResolverTypeWrapper<Ping>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Query: ResolverTypeWrapper<{}>;
   Subscription: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Query: {};
+  Ping: Ping;
   String: Scalars['String'];
+  Int: Scalars['Int'];
+  Query: {};
   Subscription: {};
   Boolean: Scalars['Boolean'];
 };
 
+export type PingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ping'] = ResolversParentTypes['Ping']> = {
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ping?: Resolver<ResolversTypes['Ping'], ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  ping?: SubscriptionResolver<ResolversTypes['String'], "ping", ParentType, ContextType>;
+  ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
 };
