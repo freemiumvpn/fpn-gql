@@ -7,10 +7,12 @@ import { logger } from '../logger'
 
 import createAuthContext, { ContextAuth } from './auth/createAuthContext'
 import createPublicKeyHandler from './auth/createPublicKeyHandler'
+import { errorHandler, ErrorHandler } from './error/errorHandler'
 
-export interface ContextApp {
+interface ContextApp {
   auth: ContextAuth
   logger: pino.Logger
+  error: ErrorHandler
 }
 
 const createContext = async (context: ExpressContext): Promise<ContextApp> => {
@@ -31,7 +33,8 @@ const createContext = async (context: ExpressContext): Promise<ContextApp> => {
   return {
     auth,
     logger,
+    error: errorHandler,
   }
 }
 
-export default createContext
+export { createContext as default, ContextApp }
