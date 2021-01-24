@@ -98,7 +98,7 @@
             "description": null,
             "args": [
               {
-                "name": "intervalMs",
+                "name": "minutes",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

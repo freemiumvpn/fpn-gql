@@ -1,25 +1,18 @@
 import { Observable } from 'rxjs/internal/Observable'
-import { interval } from 'rxjs/internal/observable/interval'
-import {
-  debounceTime,
-  tap,
-  map,
-  debounce,
-  skipWhile,
-  throttleTime,
-} from 'rxjs/operators'
+import { map, throttleTime } from 'rxjs/operators'
 import { TestScheduler } from 'rxjs/testing'
+import { interval } from 'rxjs/internal/observable/interval'
 
 import { Ping } from '../../generated/graphql'
 
-const ONE_MINUTE = 1000 * 60
+const ONE_MINUTE_IN_MS = 1000 * 60
 const createPingStream = (
-  period: number = ONE_MINUTE,
+  period: number = ONE_MINUTE_IN_MS,
   date: string = new Date().toUTCString(),
   scheduler?: TestScheduler
 ): Observable<Ping> => {
   return interval(period, scheduler).pipe(
-    map<number, Ping>((count) => ({
+    map<number, Ping>(() => ({
       __typename: 'Ping',
       date,
       message: 'OK',
@@ -29,17 +22,17 @@ const createPingStream = (
 
 const createDebouncedPingStream = (
   period: number,
-  throttleDuration: number = ONE_MINUTE,
+  throttleDuration: number = ONE_MINUTE_IN_MS,
   date: string = new Date().toUTCString(),
   scheduler?: TestScheduler
 ): Observable<Ping> =>
   interval(period, scheduler).pipe(
     throttleTime(throttleDuration, scheduler),
-    map<number, Ping>((count) => ({
+    map<number, Ping>(() => ({
       __typename: 'Ping',
       date,
       message: 'OK',
     }))
   )
 
-export { createPingStream, createDebouncedPingStream }
+export { createPingStream, createDebouncedPingStream, ONE_MINUTE_IN_MS }

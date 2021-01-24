@@ -1,11 +1,8 @@
-import { interval } from 'rxjs'
-import { map } from 'rxjs/operators'
-
 import { ContextApp } from '../../context/createContext'
 import { Ping, Resolvers } from '../../generated/graphql'
 import observableToIterator from '../../utils/observableToIterator'
 
-import { createDebouncedPingStream, createPingStream } from './ping.streams'
+import { createDebouncedPingStream, ONE_MINUTE_IN_MS } from './ping.streams'
 
 const pingResolvers: Resolvers<ContextApp> = {
   Query: {
@@ -25,8 +22,9 @@ const pingResolvers: Resolvers<ContextApp> = {
           context.logger.error(e)
         }
 
+        const pingMinutes = (args && args.minutes) || 1
         return observableToIterator(
-          createDebouncedPingStream(args && args.intervalMs),
+          createDebouncedPingStream(pingMinutes * ONE_MINUTE_IN_MS),
           handleError
         )
       },

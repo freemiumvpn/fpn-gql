@@ -4,6 +4,16 @@ const config = {
   },
   parser: '@typescript-eslint/parser',
   rules: {
+    'no-console': [
+      'error',
+      {
+        allow: ['error'],
+      },
+    ],
+    /**
+     * Imports
+     */
+    '@typescript-eslint/no-unused-vars': 'error',
     'import/order': [
       'error',
       {
@@ -23,6 +33,13 @@ const config = {
      */
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
+
+    /**
+     * Imports
+     */
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
   ],
   plugins: ['@typescript-eslint', 'import'],
   parserOptions: {

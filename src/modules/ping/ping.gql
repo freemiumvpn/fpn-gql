@@ -8,5 +8,5 @@ type Query {
 }
 
 type Subscription {
-  ping(intervalMs: Int!): Ping!
+  ping(minutes: Int!): Ping!
 }
