@@ -1,4 +1,4 @@
-import { gql, IResolvers } from 'apollo-server-express'
+import { AuthenticationError, gql, IResolvers } from 'apollo-server-express'
 import {
   ApolloServerExpressConfig,
   ExpressContext,
@@ -28,14 +28,14 @@ const appConfig: ApolloServerExpressConfig = {
       )
       if (error.type !== ErrorType.NONE) {
         errorHandler.handleError(error)
-        throw new Error(error.type)
+        throw new AuthenticationError(error.type)
       }
 
       const auth = await createWebSocketAuthContext(context)
 
       if (auth.error.type !== ErrorType.NONE) {
         errorHandler.handleError(auth.error)
-        throw new Error(auth.error.type)
+        throw new AuthenticationError(auth.error.type)
       }
     },
   },
