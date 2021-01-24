@@ -17,10 +17,15 @@ const createWebSocketAuthContext = async (
     audience,
     algorithms: ['RS256'],
     publicKey: createPublicKeyHandler(jsonWebKeySet.expressJwtSecret, {
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
       jwksUri: uri,
+      jwksRequestsPerMinute: 30,
+
+      rateLimit: true,
+      timeout: 30000, // 30s
+
+      cache: true,
+      cacheMaxEntries: 5, // Default value
+      cacheMaxAge: 1800000, // 30m
     }),
   })(context)
 }
