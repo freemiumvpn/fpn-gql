@@ -2,16 +2,12 @@ import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 import jwtExpress from 'express-jwt'
 
+import { AppError } from '../error/errorHandler'
+
 import { AuthError } from './authError'
 
-interface Error {
-  type: AuthError
-  hint?: string
-  source?: string
-}
-
 export interface ContextAuth {
-  error: Error
+  error: AppError
   token?: string
 }
 
@@ -60,7 +56,8 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
     }
   }
 
-  const authorizationHeader = context.req && context.req.headers.authorization
+  const authorizationHeader =
+    context.req && context.req.headers && context.req.headers.authorization
   if (!authorizationHeader) {
     return {
       error: {
@@ -96,6 +93,15 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   try {
     decodedToken = jwt.decode(token, { complete: true }) || {}
   } catch (error) {
+    return {
+      error: {
+        type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
+        hint: 'token is malformed',
+      },
+    }
+  }
+
+  if (Object.keys(decodedToken).length < 1) {
     return {
       error: {
         type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
