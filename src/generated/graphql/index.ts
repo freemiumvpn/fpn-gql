@@ -31,7 +31,7 @@ export type Subscription = {
 
 
 export type SubscriptionPingArgs = {
-  intervalMs: Scalars['Int'];
+  minutes: Scalars['Int'];
 };
 
 
@@ -141,7 +141,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'intervalMs'>>;
+  ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'minutes'>>;
 };
 
 export type Resolvers<ContextType = any> = {
