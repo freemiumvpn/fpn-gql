@@ -31,7 +31,7 @@ describe('Ping Streams', () => {
       }
 
       const expected$ = m.cold('--a-b-c', expectedEvent)
-      const value$ = createPingStream(1000, 'YYYY-MM-DD', m.scheduler)
+      const value$ = createPingStream(1000, () => 'YYYY-MM-DD', m.scheduler)
 
       m.expect(value$).toBeObservable(expected$)
     })
@@ -51,11 +51,11 @@ describe('Ping Streams', () => {
       }
 
       // eslint-disable-next-line prettier/prettier
-      const expected$ = m.hot('^x----x----x----x----x----x', pingEvents)
+      const expected$ = m.hot('xx----x----x----x----x----x', pingEvents)
       const value$ = createDebouncedPingStream(
         100,
         500,
-        'YYYY-MM-DD',
+        () => 'YYYY-MM-DD',
         m.scheduler
       )
 
