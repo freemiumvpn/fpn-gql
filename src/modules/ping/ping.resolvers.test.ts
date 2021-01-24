@@ -27,7 +27,9 @@ describe('Ping Resolvers', () => {
         >).ping
 
       const parent = void 0
-      const argument = void 0
+      const argument = {
+        intervalMs: 1000,
+      }
       const context = {}
       const info = {}
 

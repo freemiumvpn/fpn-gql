@@ -1,6 +1,5 @@
 type Ping {
   date: String!
-  count: Int!
   message: String!
 }
 
@@ -9,5 +8,5 @@ type Query {
 }
 
 type Subscription {
-  ping: Ping!
+  ping(intervalMs: Int!): Ping!
 }
