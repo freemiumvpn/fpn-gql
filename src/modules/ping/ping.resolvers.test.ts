@@ -1,8 +1,24 @@
 import { GraphQLResolveInfo } from 'graphql'
+import { of } from 'rxjs'
 
 import { Ping, SubscriptionObject } from '../../generated/graphql'
 
 import pingResolvers from './ping.resolvers'
+import { createDebouncedPingStream } from './ping.streams'
+
+/**
+ * Mocks observable to return 1 ping,
+ * the alternative would be to provide
+ * the observables from within the context.
+ */
+jest.mock('./ping.streams.ts')
+;(createDebouncedPingStream as jest.Mock).mockImplementation(() =>
+  of({
+    __typename: 'Ping',
+    date: new Date().toUTCString(),
+    message: 'OK',
+  })
+)
 
 describe('Ping Resolvers', () => {
   describe('Query', () => {
@@ -28,7 +44,7 @@ describe('Ping Resolvers', () => {
 
       const parent = void 0
       const argument = {
-        intervalMs: 1000,
+        minutes: 1,
       }
       const context = {}
       const info = {}
