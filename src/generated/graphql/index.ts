@@ -3,6 +3,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -15,7 +16,6 @@ export type Scalars = {
 export type Ping = {
   __typename: 'Ping';
   date: Scalars['String'];
-  count: Scalars['Int'];
   message: Scalars['String'];
 };
 
@@ -27,6 +27,11 @@ export type Query = {
 export type Subscription = {
   __typename: 'Subscription';
   ping: Ping;
+};
+
+
+export type SubscriptionPingArgs = {
+  intervalMs: Scalars['Int'];
 };
 
 
@@ -109,9 +114,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Ping: ResolverTypeWrapper<Ping>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Query: ResolverTypeWrapper<{}>;
   Subscription: ResolverTypeWrapper<{}>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -119,15 +124,14 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Ping: Ping;
   String: Scalars['String'];
-  Int: Scalars['Int'];
   Query: {};
   Subscription: {};
+  Int: Scalars['Int'];
   Boolean: Scalars['Boolean'];
 };
 
 export type PingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ping'] = ResolversParentTypes['Ping']> = {
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -137,7 +141,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType>;
+  ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'intervalMs'>>;
 };
 
 export type Resolvers<ContextType = any> = {

@@ -5,15 +5,7 @@ import { ContextApp } from '../../context/createContext'
 import { Ping, Resolvers } from '../../generated/graphql'
 import observableToIterator from '../../utils/observableToIterator'
 
-const createPing = (count: number): Ping => ({
-  __typename: 'Ping',
-  count,
-  date: new Date().toUTCString(),
-  message: 'OK',
-})
-
-const ONE_SECOND = 1000
-const interval$ = interval(ONE_SECOND).pipe(map((ping) => createPing(ping)))
+import { createDebouncedPingStream, createPingStream } from './ping.streams'
 
 const pingResolvers: Resolvers<ContextApp> = {
   Query: {
@@ -21,20 +13,22 @@ const pingResolvers: Resolvers<ContextApp> = {
       return {
         __typename: 'Ping',
         date: new Date().toUTCString(),
-        count: 1,
         message: 'OK',
       }
     },
   },
   Subscription: {
     ping: {
-      subscribe: (_, __, context): AsyncIterator<Ping> => {
+      subscribe: (_, args, context: ContextApp): AsyncIterator<Ping> => {
         const handleError = (e: Record<string, unknown>) => {
           // TODO move error handler to context
           context.logger.error(e)
         }
 
-        return observableToIterator(interval$, handleError)
+        return observableToIterator(
+          createDebouncedPingStream(args && args.intervalMs),
+          handleError
+        )
       },
       resolve: (parent: Ping): Ping => {
         return parent
