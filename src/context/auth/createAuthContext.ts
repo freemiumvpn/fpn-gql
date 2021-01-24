@@ -57,7 +57,10 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   }
 
   const authorizationHeader =
-    context.req && context.req.headers && context.req.headers.authorization
+    context.req &&
+    context.req.headers &&
+    (context.req.headers.authorization || context.req.headers.Authorization)
+
   if (!authorizationHeader) {
     return {
       error: {

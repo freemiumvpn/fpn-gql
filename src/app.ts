@@ -23,7 +23,7 @@ const appConfig: ApolloServerExpressConfig = {
   logger,
   subscriptions: {
     onConnect: async (connectionParams: unknown): Promise<void> => {
-      const { error } = verifyConnectionParams(
+      const { error, context } = verifyConnectionParams(
         connectionParams as ExpressContext
       )
       if (error.type !== ErrorType.NONE) {
@@ -31,9 +31,7 @@ const appConfig: ApolloServerExpressConfig = {
         throw new Error(error.type)
       }
 
-      const auth = await createWebSocketAuthContext(
-        connectionParams as ExpressContext
-      )
+      const auth = await createWebSocketAuthContext(context)
 
       if (auth.error.type !== ErrorType.NONE) {
         errorHandler.handleError(auth.error)

@@ -19,6 +19,29 @@ describe('verifyConnectionParams', () => {
     expect(error).toEqual(expected)
   })
 
+  it('allows authorization key', () => {
+    const params = {
+      authorization: 'foo',
+    }
+
+    const { error, context } = verifyConnectionParams(
+      (params as unknown) as ExpressContext
+    )
+
+    const expected = {
+      type: ErrorType.NONE,
+    }
+
+    expect(error).toEqual(expected)
+    expect(context).toEqual({
+      req: {
+        headers: {
+          authorization: 'foo',
+        },
+      },
+    })
+  })
+
   it('verifies req', () => {
     const params = {
       req: void 0,
