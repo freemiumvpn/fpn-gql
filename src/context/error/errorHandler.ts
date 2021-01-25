@@ -14,7 +14,17 @@ class ErrorHandler {
   private reporter$ = new Subject<AppError>()
 
   public handleError = (error: AppError): void => {
-    this.reporter$.next(error)
+    this.reporter$.next({
+      type: error.type,
+      hint: error.hint,
+      source:
+        typeof error.source === 'string'
+          ? error.source
+          : JSON.stringify(
+              error.source,
+              Object.getOwnPropertyNames(error.source)
+            ),
+    })
   }
 
   public subscribe = (listener: NextObserver<AppError>): Subscription =>

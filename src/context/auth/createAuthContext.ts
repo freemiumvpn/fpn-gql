@@ -5,13 +5,14 @@ import jwtExpress from 'express-jwt'
 import { AppError } from '../error/errorHandler'
 
 import { AuthError } from './authError'
+import { WebKeyClient } from './webKeyClient'
 
-export interface ContextAuth {
+interface ContextAuth {
   error: AppError
   token?: string
 }
 
-export interface CreateAuthContextOptions {
+interface CreateAuthContextOptions {
   audience: string
   /**
    * @deprecated
@@ -21,11 +22,10 @@ export interface CreateAuthContextOptions {
   issuer?: string
   algorithms: Algorithm[]
   secret?: jwtExpress.secretType
-  publicKey?: (
-    context: ExpressContext,
-    decodedToken: string | { [key: string]: any }
-  ) => Promise<jwtExpress.secretType>
+  publicKey?: WebKeyClient['getKey']
 }
+
+type DecodedToken = Record<string, Record<string, string>>
 
 const createAuthContext = (options: CreateAuthContextOptions) => async (
   context: ExpressContext
@@ -89,9 +89,9 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
     }
   }
 
-  let decodedToken
+  let decodedToken: DecodedToken
   try {
-    decodedToken = jwt.decode(token, { complete: true }) || {}
+    decodedToken = (jwt.decode(token, { complete: true }) as DecodedToken) || {}
   } catch (error) {
     return {
       error: {
@@ -113,10 +113,11 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   /**
    * Resolve Secret
    */
+
   let secret = options.secret
   if (options.publicKey) {
     try {
-      secret = await options.publicKey(context, decodedToken)
+      secret = await options.publicKey(decodedToken.header.kid)
     } catch (error) {
       return {
         error: {
@@ -159,4 +160,4 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   }
 }
 
-export default createAuthContext
+export { ContextAuth, CreateAuthContextOptions, createAuthContext as default }

@@ -164,10 +164,13 @@ describe('createAuthContext', () => {
       publicKey: jest.fn(),
     }
 
+    const secret = 'baz'
+    const token = jwt.sign({ foo: 'bar' }, secret)
+
     const expressContext = {
       req: {
         headers: {
-          authorization: 'Bearer foo',
+          authorization: `Bearer ${token}`,
         },
       },
     }
@@ -179,7 +182,6 @@ describe('createAuthContext', () => {
 
   it('should be able to check public key errors', async () => {
     const options: CreateAuthContextOptions = {
-      secret: 'foo',
       audience: 'baz',
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
@@ -188,10 +190,13 @@ describe('createAuthContext', () => {
       }),
     }
 
+    const incorrectSecret = 'baz'
+    const token = jwt.sign({ foo: 'bar' }, incorrectSecret)
+
     const expressContext = {
       req: {
         headers: {
-          authorization: 'Bearer foo',
+          authorization: `Bearer ${token}`,
         },
       },
     }
@@ -249,7 +254,7 @@ describe('createAuthContext', () => {
     expect(context).toEqual(expected)
   })
 
-  it.only('should check secret resolution', async () => {
+  it('should check secret resolution', async () => {
     const options: CreateAuthContextOptions = {
       audience: 'baz',
       issuer: 'http://gizmo',
@@ -285,6 +290,13 @@ describe('createAuthContext', () => {
   })
 
   it('should verify token', async () => {
+    const options: CreateAuthContextOptions = {
+      audience: 'baz',
+      issuer: 'http://gizmodo',
+      algorithms: ['HS256' as Algorithm],
+      secret: 'foo',
+    }
+
     const expressContext = {
       req: {
         headers: {
@@ -299,8 +311,8 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
-        source: '{"name":"JsonWebTokenError","message":"jwt malformed"}',
+        type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
+        hint: 'token is malformed',
       },
     }
 
@@ -344,6 +356,13 @@ describe('createAuthContext', () => {
   })
 
   it('should check if token is expired', async () => {
+    const options: CreateAuthContextOptions = {
+      audience: 'baz',
+      issuer: 'http://gizmodo',
+      algorithms: ['HS256' as Algorithm],
+      secret: 'foo',
+    }
+
     const exp = new Date('1970-12-12').getTime() / 1000
     const token = jwt.sign({ foo: 'bar', exp }, options.secret as string)
 
@@ -371,6 +390,13 @@ describe('createAuthContext', () => {
   })
 
   it('should check if audience is incorrect', async () => {
+    const options: CreateAuthContextOptions = {
+      audience: 'baz',
+      issuer: 'http://gizmodo',
+      algorithms: ['HS256' as Algorithm],
+      secret: 'foo',
+    }
+
     const incorrectAudience = 'gizmo'
     const token = jwt.sign(
       { foo: 'bar', aud: incorrectAudience },
@@ -400,7 +426,15 @@ describe('createAuthContext', () => {
     expect(context).toEqual(expected)
   })
 
-  it('should check if issuer is incorrect', async () => {
+  // not checking for issuer anymore
+  it.skip('should check if issuer is incorrect', async () => {
+    const options: CreateAuthContextOptions = {
+      audience: 'baz',
+      issuer: 'http://gizmodo',
+      algorithms: ['HS256' as Algorithm],
+      secret: 'foo',
+    }
+
     const incorrectIssuer = 'http://gizmo'
     const token = jwt.sign(
       { foo: 'bar', aud: options.audience, iss: incorrectIssuer },
@@ -431,6 +465,13 @@ describe('createAuthContext', () => {
   })
 
   it('should return token', async () => {
+    const options: CreateAuthContextOptions = {
+      audience: 'baz',
+      issuer: 'http://gizmodo',
+      algorithms: ['HS256' as Algorithm],
+      secret: 'foo',
+    }
+
     const token = jwt.sign(
       { foo: 'bar', aud: options.audience, iss: options.issuer },
       options.secret as string
