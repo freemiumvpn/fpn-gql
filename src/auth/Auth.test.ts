@@ -38,7 +38,7 @@ describe('AUTH', () => {
     })
 
     // @ts-ignore
-    new Auth(void 0, void 0, errorHandler)
+    expect(() => new Auth(void 0, void 0, errorHandler)).toThrow()
   })
 
   it('should should retrieve keys', async () => {

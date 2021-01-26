@@ -8,7 +8,10 @@ import memoise from './utils/memoise'
  * process.env is made available through
  * webpack externals
  */
-const processEnv = process.env || require('processEnv')
+const processEnv = Object.getOwnPropertyNames(process.env).length
+  ? process.env
+  : require('processEnv')
+
 const PATH_ROOT = path.resolve(__dirname, '..')
 
 enum EnvVar {

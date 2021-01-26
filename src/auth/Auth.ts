@@ -19,13 +19,12 @@ class Auth {
     errorHandler: ErrorHandler
   ) {
     if (!signingKeys || !signingKeysUri) {
-      errorHandler.handleError({
+      throw errorHandler.handleError({
         type: ErrorType.AUTH_CONSTRUCTOR,
         hint: 'Failed to provide signingKeys or signingKeysUri',
         source: new Error(),
       })
     }
-
     this.errorHandler = errorHandler
     this.keys = this.createKeyStore(signingKeys)
   }
