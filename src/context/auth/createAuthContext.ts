@@ -5,7 +5,6 @@ import jwtExpress from 'express-jwt'
 import { AppError } from '../error/errorHandler'
 
 import { AuthError } from './authError'
-import { WebKeyClient } from './webKeyClient'
 
 interface ContextAuth {
   error: AppError
@@ -22,7 +21,7 @@ interface CreateAuthContextOptions {
   issuer?: string
   algorithms: Algorithm[]
   secret?: jwtExpress.secretType
-  publicKey?: WebKeyClient['getKey']
+  publicKey?: (headerKid: string) => Promise<string>
 }
 
 type DecodedToken = Record<string, Record<string, string>>
