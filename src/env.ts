@@ -8,14 +8,14 @@ import memoise from './utils/memoise'
  * process.env is made available through
  * webpack externals
  */
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const processEnv = require('processEnv')
+const processEnv = process.env || require('processEnv')
 const PATH_ROOT = path.resolve(__dirname, '..')
 
 enum EnvVar {
   AUTH0_URI = 'AUTH0_URI',
   AUTH0_AUDIENCE = 'AUTH0_AUDIENCE',
   AUTH0_ISSUER = 'AUTH0_ISSUER',
+  AUTH0_JWKS = 'AUTH0_JWKS',
 
   APP_PORT = 'APP_PORT',
 }
@@ -28,6 +28,7 @@ interface Env {
     uri: string
     audience: string
     issuer: string
+    jwks: string
   }
 }
 
@@ -67,6 +68,7 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
       uri: env.AUTH0_URI || '',
       audience: env.AUTH0_AUDIENCE || '',
       issuer: env.AUTH0_ISSUER || '',
+      jwks: env.AUTH0_JWKS || '',
     },
     app: {
       port: env.APP_PORT || '',

@@ -56,7 +56,7 @@ class WebKeyClient {
           resolve(signingKey)
         } catch (error) {
           reject({
-            type: ErrorType.AUTH_WEB_KEY_CLIENT,
+            type: ErrorType.AUTH_JSON_WEB_KEY_STORE,
             hint: 'Failed to get signing key',
             source: error,
           })

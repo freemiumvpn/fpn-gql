@@ -1,9 +1,9 @@
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 
+import { auth } from '../../auth/Auth'
 import getEnv from '../../env'
 
 import createAuthContext, { ContextAuth } from './createAuthContext'
-import { webKeyClient } from './webKeyClient'
 
 const {
   auth0: { audience },
@@ -15,7 +15,10 @@ const createWebSocketAuthContext = async (
   return await createAuthContext({
     audience,
     algorithms: ['RS256'],
-    publicKey: webKeyClient.getKey,
+    publicKey: async (kid: string) => {
+      const { key } = await auth.getKey(kid)
+      return key || ''
+    },
   })(context)
 }
 
