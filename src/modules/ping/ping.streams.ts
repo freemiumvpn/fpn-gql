@@ -7,6 +7,7 @@ import { of, merge } from 'rxjs'
 import { Ping } from '../../generated/graphql'
 
 const ONE_MINUTE_IN_MS = 1000 * 60
+
 const createPingStream = (
   period: number = ONE_MINUTE_IN_MS,
   createDate: () => string = () => new Date().toUTCString(),

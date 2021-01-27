@@ -11,18 +11,27 @@ import { ErrorType } from './middlewares/error/ErrorType'
 import { errorHandler } from './middlewares/error/ErrorHandler'
 import { logger } from './middlewares/logger/Logger'
 import { auth } from './middlewares/auth/Auth'
+import vpnModule from './modules/vpn/vpn.module'
+
+interface SubscriptionContext {
+  token?: string
+}
 
 const appConfig: ApolloServerExpressConfig = {
   resolvers: {
     ...pingModule.resolvers,
+    ...vpnModule.resolvers,
   } as IResolvers,
   typeDefs: gql`
     ${pingModule.typeDefs}
+    ${vpnModule.typeDefs}
   `,
   context: createContext,
   logger,
   subscriptions: {
-    onConnect: async (connectionParams: unknown): Promise<void> => {
+    onConnect: async (
+      connectionParams: unknown
+    ): Promise<SubscriptionContext> => {
       const { error, context } = verifyConnectionParams(
         connectionParams as ExpressContext
       )
@@ -36,6 +45,10 @@ const appConfig: ApolloServerExpressConfig = {
       if (authResponse.error.type !== ErrorType.NONE) {
         errorHandler.handleError(authResponse.error)
         throw new AuthenticationError(authResponse.error.type)
+      }
+
+      return {
+        token: authResponse.token,
       }
     },
   },
