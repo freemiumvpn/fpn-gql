@@ -27,11 +27,31 @@ export type Query = {
 export type Subscription = {
   __typename: 'Subscription';
   ping: Ping;
+  vpn: VpnSession;
 };
 
 
 export type SubscriptionPingArgs = {
   minutes: Scalars['Int'];
+};
+
+export enum VpnSessionStatus {
+  None = 'NONE',
+  Connected = 'CONNECTED',
+  Disconnected = 'DISCONNECTED',
+  Expired = 'EXPIRED'
+}
+
+export type VpnSession = {
+  __typename: 'VpnSession';
+  id: Scalars['String'];
+  status: VpnSessionStatus;
+};
+
+export type Mutation = {
+  __typename: 'Mutation';
+  createSession: VpnSessionStatus;
+  deleteSession: VpnSessionStatus;
 };
 
 
@@ -117,6 +137,9 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Subscription: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  VpnSessionStatus: VpnSessionStatus;
+  VpnSession: ResolverTypeWrapper<VpnSession>;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -127,6 +150,8 @@ export type ResolversParentTypes = {
   Query: {};
   Subscription: {};
   Int: Scalars['Int'];
+  VpnSession: VpnSession;
+  Mutation: {};
   Boolean: Scalars['Boolean'];
 };
 
@@ -142,12 +167,26 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'minutes'>>;
+  vpn?: SubscriptionResolver<ResolversTypes['VpnSession'], "vpn", ParentType, ContextType>;
+};
+
+export type VpnSessionResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnSession'] = ResolversParentTypes['VpnSession']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  deleteSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
+  VpnSession?: VpnSessionResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
 };
 
 

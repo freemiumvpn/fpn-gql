@@ -44,4 +44,4 @@ const pingResolvers: Resolvers<ContextApp> = {
   },
 }
 
-export default pingResolvers
+export { pingResolvers }

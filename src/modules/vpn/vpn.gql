@@ -1,0 +1,20 @@
+enum VpnSessionStatus {
+  NONE
+  CONNECTED
+  DISCONNECTED
+  EXPIRED
+}
+
+type VpnSession {
+  id: String!
+  status: VpnSessionStatus!
+}
+
+type Mutation {
+  createSession: VpnSessionStatus!
+  deleteSession: VpnSessionStatus!
+}
+
+extend type Subscription {
+  vpn: VpnSession!
+}

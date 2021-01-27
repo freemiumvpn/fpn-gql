@@ -1,4 +1,4 @@
-import pingResolvers from './ping.resolvers'
+import { pingResolvers } from './ping.resolvers'
 import pingGql from './ping.gql'
 
 const pingModule = {
