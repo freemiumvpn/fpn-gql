@@ -3,7 +3,7 @@ import { of } from 'rxjs'
 
 import { Ping, SubscriptionObject } from '../../generated/graphql'
 
-import pingResolvers from './ping.resolvers'
+import { pingResolvers } from './ping.resolvers'
 import { createDebouncedPingStream } from './ping.streams'
 
 /**
