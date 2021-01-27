@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import { ErrorType } from '../context/error/Error'
-import { ErrorHandler } from '../context/error/errorHandler'
+import { ErrorHandler } from '../middlewares/error/ErrorHandler'
+import { ErrorType } from '../middlewares/error/ErrorType'
 
 import { Auth } from './Auth'
 

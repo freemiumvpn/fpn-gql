@@ -1,8 +1,8 @@
 import { JSONWebKeySet } from 'jose'
 
-import { ErrorType } from '../context/error/Error'
-import { errorHandler, ErrorHandler } from '../context/error/errorHandler'
 import getEnv from '../env'
+import { errorHandler, ErrorHandler } from '../middlewares/error/ErrorHandler'
+import { ErrorType } from '../middlewares/error/ErrorType'
 
 import {
   createSigningKeysStore,

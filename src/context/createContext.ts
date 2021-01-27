@@ -1,8 +1,7 @@
 import pino from 'pino'
 
 import { logger } from '../logger'
-
-import { errorHandler, ErrorHandler } from './error/errorHandler'
+import { errorHandler, ErrorHandler } from '../middlewares/error/ErrorHandler'
 
 interface ContextApp {
   logger: pino.Logger
