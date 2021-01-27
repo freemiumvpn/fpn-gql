@@ -6,8 +6,8 @@ import jsonWebKeySet from 'jwks-rsa'
 import pino from 'pino'
 
 import getEnv from '../../env'
-import { logger } from '../../logger'
 import { ErrorType } from '../../middlewares/error/ErrorType'
+import { logger } from '../../middlewares/logger/Logger'
 
 class WebKeyClient {
   private client: jsonWebKeySet.JwksClient

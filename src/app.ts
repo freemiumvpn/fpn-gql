@@ -6,11 +6,11 @@ import {
 
 import pingModule from './modules/ping/ping.module'
 import createContext from './context/createContext'
-import { logger } from './logger'
 import { createWebSocketAuthContext } from './context/auth/createWebSocketAuthContext'
 import { verifyConnectionParams } from './utils/verifyConnectionParams'
 import { ErrorType } from './middlewares/error/ErrorType'
 import { errorHandler } from './middlewares/error/ErrorHandler'
+import { logger } from './middlewares/logger/Logger'
 
 const appConfig: ApolloServerExpressConfig = {
   resolvers: {
