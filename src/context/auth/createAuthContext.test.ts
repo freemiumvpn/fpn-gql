@@ -1,7 +1,8 @@
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 
-import { AuthError } from './authError'
+import { ErrorType } from '../../middlewares/error/ErrorType'
+
 import createAuthContext, {
   ContextAuth,
   CreateAuthContextOptions,
@@ -38,7 +39,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_NO_SECRET_OR_PUBLIC_KEY_FOUND,
+        type: ErrorType.AUTH_NO_SECRET_OR_PUBLIC_KEY_FOUND,
       },
     }
 
@@ -61,7 +62,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.NONE,
+        type: ErrorType.NONE,
       },
     }
 
@@ -81,7 +82,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_HEADER_NOT_FOUND,
+        type: ErrorType.AUTH_HEADER_NOT_FOUND,
         hint: 'key req.headers.authorization not present',
       },
     }
@@ -103,7 +104,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_HEADER_MALFORMED,
+        type: ErrorType.AUTH_HEADER_MALFORMED,
         hint: 'Valid Format: Bearer <token>',
       },
     }
@@ -125,7 +126,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_AUTH_TYPE_INVALID,
+        type: ErrorType.AUTH_AUTH_TYPE_INVALID,
         hint:
           'Bearer Type not supplied see https://tools.ietf.org/html/rfc6750',
       },
@@ -149,7 +150,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
+        type: ErrorType.AUTH_FAILED_TO_DECODE_TOKEN,
         hint: 'token is malformed',
       },
     }
@@ -207,7 +208,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_PUBLIC_KEY_FETCH_FAILED,
+        type: ErrorType.AUTH_PUBLIC_KEY_FETCH_FAILED,
         hint: 'Failed to get secret from public key',
       },
     }
@@ -246,7 +247,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source: '{"name":"JsonWebTokenError","message":"invalid signature"}',
       },
     }
@@ -281,7 +282,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_NO_SECRET_FOUND,
+        type: ErrorType.AUTH_NO_SECRET_FOUND,
         hint: 'Unable to resolve secret from options or public key',
       },
     }
@@ -311,7 +312,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
+        type: ErrorType.AUTH_FAILED_TO_DECODE_TOKEN,
         hint: 'token is malformed',
       },
     }
@@ -347,7 +348,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source: '{"name":"JsonWebTokenError","message":"invalid signature"}',
       },
     }
@@ -380,7 +381,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source:
           '{"name":"TokenExpiredError","message":"jwt expired","expiredAt":"1970-12-12T00:00:00.000Z"}',
       },
@@ -417,7 +418,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source:
           '{"name":"JsonWebTokenError","message":"jwt audience invalid. expected: baz"}',
       },
@@ -455,7 +456,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source:
           '{"name":"JsonWebTokenError","message":"jwt issuer invalid. expected: http://gizmodo"}',
       },
@@ -491,7 +492,7 @@ describe('createAuthContext', () => {
 
     const expected: ContextAuth = {
       error: {
-        type: AuthError.NONE,
+        type: ErrorType.NONE,
       },
     }
 

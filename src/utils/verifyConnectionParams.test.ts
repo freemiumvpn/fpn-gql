@@ -1,6 +1,6 @@
 import { ExpressContext } from 'apollo-server-express'
 
-import { ErrorType } from '../context/error/Error'
+import { ErrorType } from '../middlewares/error/ErrorType'
 
 import { verifyConnectionParams } from './verifyConnectionParams'
 

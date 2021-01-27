@@ -2,10 +2,10 @@ import { NextObserver, Subject, Subscription } from 'rxjs'
 
 import { logger } from '../../logger'
 
-import { AppErrorType } from './Error'
+import { ErrorType } from './ErrorType'
 
 interface AppError {
-  type: AppErrorType
+  type: ErrorType
   hint?: string
   source?: Error | string
 }
@@ -17,18 +17,21 @@ class ErrorHandler {
     this.reporter$.next({
       type: error.type,
       hint: error.hint,
-      source:
-        typeof error.source === 'string'
-          ? error.source
-          : JSON.stringify(
-              error.source,
-              Object.getOwnPropertyNames(error.source)
-            ),
+      source: this.createErrorSource(error.source),
     })
   }
 
-  public subscribe = (listener: NextObserver<AppError>): Subscription =>
-    this.reporter$.subscribe(listener)
+  public subscribe = (listener: NextObserver<AppError>): Subscription => {
+    return this.reporter$.subscribe(listener)
+  }
+
+  private createErrorSource = (source: AppError['source']) => {
+    if (!source) return ''
+
+    return typeof source === 'object'
+      ? JSON.stringify(source, Object.getOwnPropertyNames(source))
+      : source
+  }
 }
 
 /**

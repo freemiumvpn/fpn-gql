@@ -2,9 +2,8 @@ import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 import jwtExpress from 'express-jwt'
 
-import { AppError } from '../error/errorHandler'
-
-import { AuthError } from './authError'
+import { ErrorType } from '../../middlewares/error/ErrorType'
+import { AppError } from '../../middlewares/error/ErrorHandler'
 
 interface ContextAuth {
   error: AppError
@@ -32,7 +31,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   if (!options.secret && !options.publicKey) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_NO_SECRET_OR_PUBLIC_KEY_FOUND,
+        type: ErrorType.AUTH_NO_SECRET_OR_PUBLIC_KEY_FOUND,
       },
     }
   }
@@ -50,7 +49,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   ) {
     return {
       error: {
-        type: AuthError.NONE,
+        type: ErrorType.NONE,
       },
     }
   }
@@ -60,7 +59,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   if (!authorizationHeader) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_HEADER_NOT_FOUND,
+        type: ErrorType.AUTH_HEADER_NOT_FOUND,
         hint: 'key req.headers.authorization not present',
       },
     }
@@ -70,7 +69,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   if (credentials.length !== 2) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_HEADER_MALFORMED,
+        type: ErrorType.AUTH_HEADER_MALFORMED,
         hint: 'Valid Format: Bearer <token>',
       },
     }
@@ -81,7 +80,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   if (!hasBearerType) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_AUTH_TYPE_INVALID,
+        type: ErrorType.AUTH_AUTH_TYPE_INVALID,
         hint:
           'Bearer Type not supplied see https://tools.ietf.org/html/rfc6750',
       },
@@ -94,7 +93,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   } catch (error) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
+        type: ErrorType.AUTH_FAILED_TO_DECODE_TOKEN,
         hint: 'token is malformed',
       },
     }
@@ -103,7 +102,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   if (Object.keys(decodedToken).length < 1) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_FAILED_TO_DECODE_TOKEN,
+        type: ErrorType.AUTH_FAILED_TO_DECODE_TOKEN,
         hint: 'token is malformed',
       },
     }
@@ -112,7 +111,6 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   /**
    * Resolve Secret
    */
-
   let secret = options.secret
   if (options.publicKey) {
     try {
@@ -120,7 +118,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
     } catch (error) {
       return {
         error: {
-          type: AuthError.AUTHORIZATION_PUBLIC_KEY_FETCH_FAILED,
+          type: ErrorType.AUTH_PUBLIC_KEY_FETCH_FAILED,
           hint: 'Failed to get secret from public key',
           source: error,
         },
@@ -131,7 +129,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   if (!secret) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_NO_SECRET_FOUND,
+        type: ErrorType.AUTH_NO_SECRET_FOUND,
         hint: 'Unable to resolve secret from options or public key',
       },
     }
@@ -145,7 +143,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   } catch (error) {
     return {
       error: {
-        type: AuthError.AUTHORIZATION_TOKEN_VERIFICATION_FAILED,
+        type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source: JSON.stringify(error),
       },
     }
@@ -153,7 +151,7 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
 
   return {
     error: {
-      type: AuthError.NONE,
+      type: ErrorType.NONE,
     },
     token,
   }

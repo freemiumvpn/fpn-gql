@@ -1,5 +1,10 @@
 import { ContextApp } from '../../context/createContext'
-import { Ping, Resolvers } from '../../generated/graphql'
+import {
+  Ping,
+  RequireFields,
+  Resolvers,
+  SubscriptionPingArgs,
+} from '../../generated/graphql'
 import observableToIterator from '../../utils/observableToIterator'
 
 import { createDebouncedPingStream, ONE_MINUTE_IN_MS } from './ping.streams'
@@ -16,7 +21,11 @@ const pingResolvers: Resolvers<ContextApp> = {
   },
   Subscription: {
     ping: {
-      subscribe: (_, args, context: ContextApp): AsyncIterator<Ping> => {
+      subscribe: (
+        _: Record<string | number | symbol, unknown>,
+        args: RequireFields<SubscriptionPingArgs, 'minutes'>,
+        context: ContextApp
+      ): AsyncIterator<Ping> => {
         const handleError = (e: Record<string, unknown>) => {
           // TODO move error handler to context
           context.logger.error(e)

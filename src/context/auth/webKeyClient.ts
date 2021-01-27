@@ -7,7 +7,7 @@ import pino from 'pino'
 
 import getEnv from '../../env'
 import { logger } from '../../logger'
-import { ErrorType } from '../error/Error'
+import { ErrorType } from '../../middlewares/error/ErrorType'
 
 class WebKeyClient {
   private client: jsonWebKeySet.JwksClient
