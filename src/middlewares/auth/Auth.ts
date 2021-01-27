@@ -1,13 +1,23 @@
+import { ExpressContext } from 'apollo-server-express'
 import { JSONWebKeySet } from 'jose'
 
-import getEnv from '../env'
-import { errorHandler, ErrorHandler } from '../middlewares/error/ErrorHandler'
-import { ErrorType } from '../middlewares/error/ErrorType'
+import getEnv from '../../env'
+import { errorHandler, ErrorHandler } from '../error/ErrorHandler'
+import { ErrorType } from '../error/ErrorType'
 
 import {
   createSigningKeysStore,
   KeyConfig,
 } from './utils/createSigningKeysStore'
+import {
+  validateAuthRequest,
+  ValidateAuthRequestOptions,
+  ValidateAuthRequestResponse,
+} from './utils/validateAuthRequest'
+
+const {
+  auth0: { jwks, uri, audience },
+} = getEnv()
 
 class Auth {
   private keys: KeyConfig[] | void
@@ -81,14 +91,25 @@ class Auth {
       error: null,
     }
   }
+
+  public validateRequest = async (
+    context: ExpressContext
+  ): Promise<ValidateAuthRequestResponse> => {
+    const options: ValidateAuthRequestOptions = {
+      audience,
+      algorithms: ['RS256'],
+      publicKey: async (kid: string) => {
+        const { key } = await this.getKey(kid)
+        return key || ''
+      },
+    }
+
+    return validateAuthRequest(options)(context)
+  }
 }
 
 /**
  * auth is a singleton
  */
-const {
-  auth0: { jwks, uri },
-} = getEnv()
-
 const auth = new Auth(jwks, uri, errorHandler)
 export { Auth, auth }

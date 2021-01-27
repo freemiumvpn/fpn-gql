@@ -2,15 +2,15 @@ import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 import jwtExpress from 'express-jwt'
 
-import { ErrorType } from '../../middlewares/error/ErrorType'
-import { AppError } from '../../middlewares/error/ErrorHandler'
+import { ErrorType } from '../../error/ErrorType'
+import { AppError } from '../../error/ErrorHandler'
 
-interface ContextAuth {
+interface ValidateAuthRequestResponse {
   error: AppError
   token?: string
 }
 
-interface CreateAuthContextOptions {
+interface ValidateAuthRequestOptions {
   audience: string
   /**
    * @deprecated
@@ -25,9 +25,9 @@ interface CreateAuthContextOptions {
 
 type DecodedToken = Record<string, Record<string, string>>
 
-const createAuthContext = (options: CreateAuthContextOptions) => async (
+const validateAuthRequest = (options: ValidateAuthRequestOptions) => async (
   context: ExpressContext
-): Promise<ContextAuth> => {
+): Promise<ValidateAuthRequestResponse> => {
   if (!options.secret && !options.publicKey) {
     return {
       error: {
@@ -157,4 +157,8 @@ const createAuthContext = (options: CreateAuthContextOptions) => async (
   }
 }
 
-export { ContextAuth, CreateAuthContextOptions, createAuthContext as default }
+export {
+  ValidateAuthRequestResponse,
+  ValidateAuthRequestOptions,
+  validateAuthRequest,
+}
