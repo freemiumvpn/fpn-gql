@@ -1,6 +1,6 @@
 import { NextObserver, Subject, Subscription } from 'rxjs'
 
-import { logger } from '../../logger'
+import { logger } from '../logger/Logger'
 
 import { ErrorType } from './ErrorType'
 

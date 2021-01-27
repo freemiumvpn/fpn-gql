@@ -7,9 +7,9 @@ import expressPino from 'express-pino-logger'
 
 import { appConfig } from './app'
 import getEnv from './env'
-import { logger, LoggerLevel } from './logger'
 import { errorHandler } from './middlewares/error/ErrorHandler'
 import { ErrorType } from './middlewares/error/ErrorType'
+import { logger, LoggerLevel } from './middlewares/logger/Logger'
 
 const {
   app: { port },
