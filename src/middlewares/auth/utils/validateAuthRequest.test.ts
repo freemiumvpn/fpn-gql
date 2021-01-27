@@ -1,15 +1,16 @@
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import jwt, { Algorithm } from 'jsonwebtoken'
 
-import { ErrorType } from '../../middlewares/error/ErrorType'
+import { ErrorType } from '../../error/ErrorType'
 
-import createAuthContext, {
-  ContextAuth,
-  CreateAuthContextOptions,
-} from './createAuthContext'
+import {
+  validateAuthRequest,
+  ValidateAuthRequestResponse,
+  ValidateAuthRequestOptions,
+} from './validateAuthRequest'
 
-describe('createAuthContext', () => {
-  const options: CreateAuthContextOptions = {
+describe('validateAuthRequest', () => {
+  const options: ValidateAuthRequestOptions = {
     audience: 'baz',
     issuer: 'http://gizmodo',
     algorithms: ['HS256' as Algorithm],
@@ -33,11 +34,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_NO_SECRET_OR_PUBLIC_KEY_FOUND,
       },
@@ -56,11 +57,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.NONE,
       },
@@ -76,11 +77,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_HEADER_NOT_FOUND,
         hint: 'key req.headers.authorization not present',
@@ -98,11 +99,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_HEADER_MALFORMED,
         hint: 'Valid Format: Bearer <token>',
@@ -120,11 +121,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_AUTH_TYPE_INVALID,
         hint:
@@ -144,11 +145,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_FAILED_TO_DECODE_TOKEN,
         hint: 'token is malformed',
@@ -158,7 +159,7 @@ describe('createAuthContext', () => {
   })
 
   it('should be able to resolve public key', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
@@ -176,13 +177,13 @@ describe('createAuthContext', () => {
       },
     }
 
-    await createAuthContext(options)(expressContext as ExpressContext)
+    await validateAuthRequest(options)(expressContext as ExpressContext)
 
     expect((options.publicKey as jest.Mock).mock.calls.length).toEqual(1)
   })
 
   it('should be able to check public key errors', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
@@ -202,11 +203,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_PUBLIC_KEY_FETCH_FAILED,
         hint: 'Failed to get secret from public key',
@@ -220,7 +221,7 @@ describe('createAuthContext', () => {
   })
 
   it('should verify toke against secret', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       secret: 'foo',
       audience: 'baz',
       issuer: 'http://gizmo',
@@ -241,11 +242,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source: '{"name":"JsonWebTokenError","message":"invalid signature"}',
@@ -256,7 +257,7 @@ describe('createAuthContext', () => {
   })
 
   it('should check secret resolution', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
@@ -276,11 +277,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_NO_SECRET_FOUND,
         hint: 'Unable to resolve secret from options or public key',
@@ -291,7 +292,7 @@ describe('createAuthContext', () => {
   })
 
   it('should verify token', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
@@ -306,11 +307,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_FAILED_TO_DECODE_TOKEN,
         hint: 'token is malformed',
@@ -321,7 +322,7 @@ describe('createAuthContext', () => {
   })
 
   it('should verify toke against secret', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       secret: 'foo',
       audience: 'baz',
       issuer: 'http://gizmo',
@@ -342,11 +343,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source: '{"name":"JsonWebTokenError","message":"invalid signature"}',
@@ -357,7 +358,7 @@ describe('createAuthContext', () => {
   })
 
   it('should check if token is expired', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
@@ -375,11 +376,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source:
@@ -391,7 +392,7 @@ describe('createAuthContext', () => {
   })
 
   it('should check if audience is incorrect', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
@@ -412,11 +413,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source:
@@ -429,7 +430,7 @@ describe('createAuthContext', () => {
 
   // not checking for issuer anymore
   it.skip('should check if issuer is incorrect', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
@@ -450,11 +451,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.AUTH_TOKEN_VERIFICATION_FAILED,
         source:
@@ -466,7 +467,7 @@ describe('createAuthContext', () => {
   })
 
   it('should return token', async () => {
-    const options: CreateAuthContextOptions = {
+    const options: ValidateAuthRequestOptions = {
       audience: 'baz',
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
@@ -486,11 +487,11 @@ describe('createAuthContext', () => {
       },
     }
 
-    const context = await createAuthContext(options)(
+    const context = await validateAuthRequest(options)(
       expressContext as ExpressContext
     )
 
-    const expected: ContextAuth = {
+    const expected: ValidateAuthRequestResponse = {
       error: {
         type: ErrorType.NONE,
       },

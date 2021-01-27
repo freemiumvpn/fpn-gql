@@ -1,7 +1,7 @@
 import jose, { JSONWebKeySet } from 'jose'
 
-import { ErrorHandler } from '../../middlewares/error/ErrorHandler'
-import { ErrorType } from '../../middlewares/error/ErrorType'
+import { ErrorHandler } from '../../error/ErrorHandler'
+import { ErrorType } from '../../error/ErrorType'
 
 interface KeyConfig {
   kid: string | null

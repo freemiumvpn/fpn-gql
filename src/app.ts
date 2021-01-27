@@ -6,11 +6,11 @@ import {
 
 import pingModule from './modules/ping/ping.module'
 import createContext from './context/createContext'
-import { createWebSocketAuthContext } from './context/auth/createWebSocketAuthContext'
 import { verifyConnectionParams } from './utils/verifyConnectionParams'
 import { ErrorType } from './middlewares/error/ErrorType'
 import { errorHandler } from './middlewares/error/ErrorHandler'
 import { logger } from './middlewares/logger/Logger'
+import { auth } from './middlewares/auth/Auth'
 
 const appConfig: ApolloServerExpressConfig = {
   resolvers: {
@@ -31,11 +31,11 @@ const appConfig: ApolloServerExpressConfig = {
         throw new AuthenticationError(error.type)
       }
 
-      const auth = await createWebSocketAuthContext(context)
+      const authResponse = await auth.validateRequest(context)
 
-      if (auth.error.type !== ErrorType.NONE) {
-        errorHandler.handleError(auth.error)
-        throw new AuthenticationError(auth.error.type)
+      if (authResponse.error.type !== ErrorType.NONE) {
+        errorHandler.handleError(authResponse.error)
+        throw new AuthenticationError(authResponse.error.type)
       }
     },
   },
