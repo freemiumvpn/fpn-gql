@@ -28,9 +28,9 @@ class ErrorHandler {
   private createErrorSource = (source: AppError['source']) => {
     if (!source) return ''
 
-    return typeof source === 'string'
-      ? source
-      : JSON.stringify(source, Object.getOwnPropertyNames(source))
+    return typeof source === 'object'
+      ? JSON.stringify(source, Object.getOwnPropertyNames(source))
+      : source
   }
 }
 
