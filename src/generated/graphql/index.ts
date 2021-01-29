@@ -50,8 +50,8 @@ export type VpnSession = {
 
 export type Mutation = {
   __typename: 'Mutation';
-  createSession: VpnSessionStatus;
-  deleteSession: VpnSessionStatus;
+  vpnCreateSession: VpnSessionStatus;
+  vpnDeleteSession: VpnSessionStatus;
 };
 
 
@@ -177,8 +177,8 @@ export type VpnSessionResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
-  deleteSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  vpnCreateSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  vpnDeleteSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {

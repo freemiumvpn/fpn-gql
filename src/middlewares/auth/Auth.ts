@@ -1,10 +1,11 @@
-import { ExpressContext } from 'apollo-server-express'
+import { AuthenticationError, ExpressContext } from 'apollo-server-express'
 import { JSONWebKeySet } from 'jose'
 
 import getEnv from '../../env'
 import { errorHandler, ErrorHandler } from '../error/ErrorHandler'
 import { ErrorType } from '../error/ErrorType'
 
+import { Token } from './Token'
 import {
   createSigningKeysStore,
   KeyConfig,
@@ -12,7 +13,6 @@ import {
 import {
   validateAuthRequest,
   ValidateAuthRequestOptions,
-  ValidateAuthRequestResponse,
 } from './utils/validateAuthRequest'
 
 const {
@@ -92,9 +92,7 @@ class Auth {
     }
   }
 
-  public validateRequest = async (
-    context: ExpressContext
-  ): Promise<ValidateAuthRequestResponse> => {
+  public validateRequest = async (context: ExpressContext): Promise<Token> => {
     const options: ValidateAuthRequestOptions = {
       audience,
       algorithms: ['RS256'],
@@ -104,7 +102,19 @@ class Auth {
       },
     }
 
-    return validateAuthRequest(options)(context)
+    const { error, token, decodedToken } = await validateAuthRequest(options)(
+      context
+    )
+
+    if (error) {
+      throw new AuthenticationError(error.type)
+    }
+
+    if (!token || !decodedToken) {
+      throw new AuthenticationError(ErrorType.AUTH_TOKEN_NOT_FOUND)
+    }
+
+    return new Token(token, decodedToken)
   }
 }
 

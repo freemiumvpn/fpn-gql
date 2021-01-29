@@ -10,7 +10,7 @@ import { vpnSession$ } from './vpn.streams'
 
 const vpnResolvers: Resolvers<ContextApp> = {
   Mutation: {
-    createSession: (): VpnSessionStatus => {
+    vpnCreateSession: (): VpnSessionStatus => {
       vpnSession$.next({
         __typename: 'VpnSession',
         id: '',
@@ -18,7 +18,7 @@ const vpnResolvers: Resolvers<ContextApp> = {
       })
       return VpnSessionStatus.Connected
     },
-    deleteSession: (): VpnSessionStatus => {
+    vpnDeleteSession: (): VpnSessionStatus => {
       vpnSession$.next({
         __typename: 'VpnSession',
         id: '',
@@ -29,17 +29,8 @@ const vpnResolvers: Resolvers<ContextApp> = {
   },
   Subscription: {
     vpn: {
-      subscribe: (
-        _: Record<string | number | symbol, unknown>,
-        args: Record<string | number | symbol, unknown>,
-        context: ContextApp
-      ): AsyncIterator<VpnSession> => {
-        const handleError = (e: Record<string, unknown>) => {
-          // TODO move error handler to context
-          context.logger.error(e)
-        }
-
-        return observableToIterator(vpnSession$, handleError)
+      subscribe: (): AsyncIterator<VpnSession> => {
+        return observableToIterator(vpnSession$)
       },
       resolve: (parent: VpnSession): VpnSession => {
         return parent

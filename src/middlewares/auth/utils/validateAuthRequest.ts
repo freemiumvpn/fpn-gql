@@ -4,10 +4,12 @@ import jwtExpress from 'express-jwt'
 
 import { ErrorType } from '../../error/ErrorType'
 import { AppError } from '../../error/ErrorHandler'
+import { DecodedToken } from '../Token'
 
 interface ValidateAuthRequestResponse {
-  error: AppError
+  error?: AppError
   token?: string
+  decodedToken?: DecodedToken
 }
 
 interface ValidateAuthRequestOptions {
@@ -22,8 +24,6 @@ interface ValidateAuthRequestOptions {
   secret?: jwtExpress.secretType
   publicKey?: (headerKid: string) => Promise<string>
 }
-
-type DecodedToken = Record<string, Record<string, string>>
 
 const validateAuthRequest = (options: ValidateAuthRequestOptions) => async (
   context: ExpressContext
@@ -54,8 +54,13 @@ const validateAuthRequest = (options: ValidateAuthRequestOptions) => async (
     }
   }
 
-  const authorizationHeader =
-    context.req && context.req.headers && context.req.headers.authorization
+  /**
+   * Check both websocket and http
+   */
+  const authorizationHeader = context.connection
+    ? context.connection.context && context.connection.context.authorization
+    : context.req && context.req.headers && context.req.headers.authorization
+
   if (!authorizationHeader) {
     return {
       error: {
@@ -150,10 +155,8 @@ const validateAuthRequest = (options: ValidateAuthRequestOptions) => async (
   }
 
   return {
-    error: {
-      type: ErrorType.NONE,
-    },
     token,
+    decodedToken,
   }
 }
 

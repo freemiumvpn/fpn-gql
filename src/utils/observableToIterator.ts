@@ -1,10 +1,13 @@
 import { Observable } from 'rxjs/internal/Observable'
 
+import { errorHandler, ErrorHandler } from '../middlewares/error/ErrorHandler'
+import { ErrorType } from '../middlewares/error/ErrorType'
+
 type PromiseResolve<T> = (value: IteratorResult<T>) => void
 
 function observableToIterator<T>(
   $: Observable<T>,
-  handleError: (e: Record<string, unknown>) => void
+  handleError: ErrorHandler['handleError'] = errorHandler.handleError
 ): AsyncIterator<T> {
   const queue: IteratorResult<T>[] = []
   const deadLetterQueue: PromiseResolve<T>[] = []
@@ -28,8 +31,12 @@ function observableToIterator<T>(
     })
   }
 
-  const onError = (e: Record<string, unknown>) => {
-    handleError(e)
+  const onError = (e: unknown) => {
+    handleError({
+      type: ErrorType.SUBSCRIPTION_OBSERVABLE_ERROR,
+      hint: 'Observable to Iterator failure',
+      source: e,
+    })
   }
 
   const onComplete = () => {

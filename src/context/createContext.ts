@@ -1,21 +1,21 @@
 import { ExpressContext } from 'apollo-server-express'
 import pino from 'pino'
 
+import { auth } from '../middlewares/auth/Auth'
+import { Token } from '../middlewares/auth/Token'
 import { errorHandler, ErrorHandler } from '../middlewares/error/ErrorHandler'
 import { logger } from '../middlewares/logger/Logger'
-
-import { extractToken } from './utils/extractToken'
 
 interface ContextApp {
   logger: pino.Logger
   error: ErrorHandler
-  token: string
+  token: Token
 }
 
 const createContext = async (
   expressContext: ExpressContext
 ): Promise<ContextApp> => {
-  const token = await extractToken(expressContext)
+  const token = await auth.validateRequest(expressContext)
 
   return {
     logger,

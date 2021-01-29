@@ -242,7 +242,7 @@
         "description": null,
         "fields": [
           {
-            "name": "createSession",
+            "name": "vpnCreateSession",
             "description": null,
             "args": [],
             "type": {
@@ -258,7 +258,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteSession",
+            "name": "vpnDeleteSession",
             "description": null,
             "args": [],
             "type": {

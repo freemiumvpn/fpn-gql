@@ -11,8 +11,8 @@ type VpnSession {
 }
 
 type Mutation {
-  createSession: VpnSessionStatus!
-  deleteSession: VpnSessionStatus!
+  vpnCreateSession: VpnSessionStatus!
+  vpnDeleteSession: VpnSessionStatus!
 }
 
 extend type Subscription {

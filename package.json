@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "apollo-server-express": "^2.19.2",
+    "deepmerge": "^4.2.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-pino-logger": "^5.0.0",
@@ -47,6 +48,7 @@
     "@types/graphql": "^14.5.0",
     "@types/jest": "^26.0.20",
     "@types/pino": "^6.3.5",
+    "@types/ramda": "^0.27.36",
     "@types/webpack-env": "^1.16.0",
     "@types/webpack-node-externals": "^2.5.0",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
