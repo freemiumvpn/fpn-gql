@@ -1,11 +1,15 @@
 import deepmerge from 'deepmerge'
 import { gql, IResolvers } from 'apollo-server-express'
-import { ApolloServerExpressConfig } from 'apollo-server-express/dist/ApolloServer'
+import {
+  ApolloServerExpressConfig,
+  ExpressContext,
+} from 'apollo-server-express/dist/ApolloServer'
 
 import pingModule from './modules/ping/ping.module'
 import createContext from './context/createContext'
 import { logger } from './middlewares/logger/Logger'
 import vpnModule from './modules/vpn/vpn.module'
+import { auth } from './middlewares/auth/Auth'
 
 const appConfig: ApolloServerExpressConfig = {
   resolvers: deepmerge.all([
@@ -18,6 +22,17 @@ const appConfig: ApolloServerExpressConfig = {
   `,
   context: createContext,
   logger,
+  subscriptions: {
+    onConnect: async (connectionParams: unknown): Promise<unknown> => {
+      const expressContext = ({
+        connection: { context: connectionParams },
+      } as unknown) as ExpressContext
+
+      await auth.validateRequest(expressContext)
+
+      return connectionParams
+    },
+  },
 }
 
 export { appConfig }
