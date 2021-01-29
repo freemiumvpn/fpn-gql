@@ -70,6 +70,27 @@ describe('validateAuthRequest', () => {
     expect(context).toEqual(expected)
   })
 
+  it('should check connection params context', async () => {
+    const expressContext = {
+      connection: {
+        context: {},
+      },
+    }
+
+    const context = await validateAuthRequest(options)(
+      expressContext as ExpressContext
+    )
+
+    const expected: ValidateAuthRequestResponse = {
+      error: {
+        type: ErrorType.AUTH_HEADER_NOT_FOUND,
+        hint: 'key req.headers.authorization not present',
+      },
+    }
+
+    expect(context).toEqual(expected)
+  })
+
   it('should check auth header', async () => {
     const expressContext = {
       req: {
@@ -215,9 +236,9 @@ describe('validateAuthRequest', () => {
     }
 
     expect((options.publicKey as jest.Mock).mock.calls.length).toEqual(1)
-    expect(context.error.type).toEqual(expected.error.type)
-    expect(context.error.hint).toEqual(expected.error.hint)
-    expect(context.error.source).toBeTruthy()
+    expect(context.error?.type).toEqual(expected.error?.type)
+    expect(context.error?.hint).toEqual(expected.error?.hint)
+    expect(context.error?.source).toBeTruthy()
   })
 
   it('should verify toke against secret', async () => {
@@ -491,13 +512,7 @@ describe('validateAuthRequest', () => {
       expressContext as ExpressContext
     )
 
-    const expected: ValidateAuthRequestResponse = {
-      error: {
-        type: ErrorType.NONE,
-      },
-    }
-
-    expect(context.error).toEqual(expected.error)
     expect(context.token).toBeTruthy()
+    expect(context.decodedToken).toBeTruthy()
   })
 })

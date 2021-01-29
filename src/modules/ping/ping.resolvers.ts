@@ -23,18 +23,11 @@ const pingResolvers: Resolvers<ContextApp> = {
     ping: {
       subscribe: (
         _: Record<string | number | symbol, unknown>,
-        args: RequireFields<SubscriptionPingArgs, 'minutes'>,
-        context: ContextApp
+        args: RequireFields<SubscriptionPingArgs, 'minutes'>
       ): AsyncIterator<Ping> => {
-        const handleError = (e: Record<string, unknown>) => {
-          // TODO move error handler to context
-          context.logger.error(e)
-        }
-
         const pingMinutes = (args && args.minutes) || 1
         return observableToIterator(
-          createDebouncedPingStream(pingMinutes * ONE_MINUTE_IN_MS),
-          handleError
+          createDebouncedPingStream(pingMinutes * ONE_MINUTE_IN_MS)
         )
       },
       resolve: (parent: Ping): Ping => {

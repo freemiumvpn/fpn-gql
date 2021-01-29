@@ -7,7 +7,7 @@ import { ErrorType } from './ErrorType'
 interface AppError {
   type: ErrorType
   hint?: string
-  source?: Error | string
+  source?: Error | string | unknown
 }
 
 class ErrorHandler {
