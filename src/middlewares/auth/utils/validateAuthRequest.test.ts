@@ -512,13 +512,7 @@ describe('validateAuthRequest', () => {
       expressContext as ExpressContext
     )
 
-    const expected: ValidateAuthRequestResponse = {
-      error: {
-        type: ErrorType.NONE,
-      },
-    }
-
-    expect(context.error).toEqual(expected.error)
     expect(context.token).toBeTruthy()
+    expect(context.decodedToken).toBeTruthy()
   })
 })
