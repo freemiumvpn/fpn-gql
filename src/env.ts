@@ -15,12 +15,19 @@ const processEnv = Object.getOwnPropertyNames(process.env).length
 const PATH_ROOT = path.resolve(__dirname, '..')
 
 enum EnvVar {
+  /**
+   * AUTH0
+   */
   AUTH0_URI = 'AUTH0_URI',
   AUTH0_AUDIENCE = 'AUTH0_AUDIENCE',
   AUTH0_ISSUER = 'AUTH0_ISSUER',
   AUTH0_JWKS = 'AUTH0_JWKS',
 
   APP_PORT = 'APP_PORT',
+  /**
+   * GRPC
+   */
+  GRPC_VPN_ADDRESS = 'GRPC_VPN_ADDRESS',
 }
 
 interface Env {
@@ -32,6 +39,9 @@ interface Env {
     audience: string
     issuer: string
     jwks: string
+  }
+  grpc: {
+    vpn: string
   }
 }
 
@@ -75,6 +85,9 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
     },
     app: {
       port: env.APP_PORT || '',
+    },
+    grpc: {
+      vpn: env.GRPC_VPN_ADDRESS || 'localhost:8989',
     },
   }
 }

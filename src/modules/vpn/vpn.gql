@@ -1,8 +1,39 @@
 enum VpnSessionStatus {
   NONE
+
+  # CREATE Cycle
+  CREATE_REQUEST_SENT
+  CREATE_REQUEST_ACKNOWLEDGED
+  CREATE_REQUEST_APPROVED
+  CREATE_REQUEST_DENIED
+  CREATE_REQUEST_ERROR
+
+  # CONNECT cycle
+  CONNECT_REQUEST_SENT
+  CONNECT_REQUEST_ACKNOWLEDGED
+  CONNECT_REQUEST_APPROVED
+  CONNECT_REQUEST_DENIED
+  CONNECT_REQUEST_ERROR
+
+  # DISCONNET cycle
+  DISCONNECT_REQUEST_SENT
+  DISCONNECT_REQUEST_ACKNOWLEDGED
+  DISCONNECT_REQUEST_APPROVED
+  DISCONNECT_REQUEST_DENIED
+  DISCONNECT_REQUEST_ERROR
+
+  # DELETE cycle
+  DELETE_REQUEST_SENT
+  DELETE_REQUEST_ACKNOWLEDGED
+  DELETE_REQUEST_APPROVED
+  DELETE_REQUEST_DENIED
+  DELETE_REQUEST_ERROR
+
+  # Session cycle
+  IDLE
   CONNECTED
   DISCONNECTED
-  EXPIRED
+  ERROR
 }
 
 type VpnSession {
@@ -11,8 +42,17 @@ type VpnSession {
 }
 
 type Mutation {
-  vpnCreateSession: VpnSessionStatus!
+  vpnCreateSession(request: VpnCreateSessionRequest!): VpnCreateSessionResponse!
   vpnDeleteSession: VpnSessionStatus!
+}
+
+input VpnCreateSessionRequest {
+  userId: String!
+}
+
+type VpnCreateSessionResponse {
+  credentials: String!
+  status: VpnSessionStatus!
 }
 
 extend type Subscription {
