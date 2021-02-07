@@ -10,6 +10,23 @@ test:
 build:
 	npm run build
 
+# ----- Protos -----
+CONTRACTS_DIR=$(shell pwd)/contracts
+GENERATED_BUILD_DIR=$(shell pwd)/src/generated/grpc
+
+protos:
+	mkdir -p $(GENERATED_BUILD_DIR)/vpn
+
+	npx grpc_tools_node_protoc \
+		--proto_path=$(CONTRACTS_DIR)/fpn-contracts/vpn \
+		--plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts \
+		--js_out=import_style=commonjs,binary:$(GENERATED_BUILD_DIR)/vpn \
+		--ts_out=generate_package_definition:$(GENERATED_BUILD_DIR)/vpn \
+		--grpc_out=grpc_js:$(GENERATED_BUILD_DIR)/vpn \
+		$(CONTRACTS_DIR)/fpn-contracts/vpn/*.proto
+
+# ----- CI -----
+
 SERVICE=fpn-gql
 
 DOCKER_REGISTRY=freemiumvpn
