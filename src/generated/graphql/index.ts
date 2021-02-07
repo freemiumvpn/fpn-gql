@@ -72,12 +72,17 @@ export type VpnSession = {
 export type Mutation = {
   __typename: 'Mutation';
   vpnCreateSession: VpnCreateSessionResponse;
-  vpnDeleteSession: VpnSessionStatus;
+  vpnDeleteSession: VpnDeleteSessionResponse;
 };
 
 
 export type MutationVpnCreateSessionArgs = {
   request: VpnCreateSessionRequest;
+};
+
+
+export type MutationVpnDeleteSessionArgs = {
+  request: VpnDeleteSessionRequest;
 };
 
 export type VpnCreateSessionRequest = {
@@ -87,6 +92,15 @@ export type VpnCreateSessionRequest = {
 export type VpnCreateSessionResponse = {
   __typename: 'VpnCreateSessionResponse';
   credentials: Scalars['String'];
+  status: VpnSessionStatus;
+};
+
+export type VpnDeleteSessionRequest = {
+  userId: Scalars['String'];
+};
+
+export type VpnDeleteSessionResponse = {
+  __typename: 'VpnDeleteSessionResponse';
   status: VpnSessionStatus;
 };
 
@@ -178,6 +192,8 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   VpnCreateSessionRequest: VpnCreateSessionRequest;
   VpnCreateSessionResponse: ResolverTypeWrapper<VpnCreateSessionResponse>;
+  VpnDeleteSessionRequest: VpnDeleteSessionRequest;
+  VpnDeleteSessionResponse: ResolverTypeWrapper<VpnDeleteSessionResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -192,6 +208,8 @@ export type ResolversParentTypes = {
   Mutation: {};
   VpnCreateSessionRequest: VpnCreateSessionRequest;
   VpnCreateSessionResponse: VpnCreateSessionResponse;
+  VpnDeleteSessionRequest: VpnDeleteSessionRequest;
+  VpnDeleteSessionResponse: VpnDeleteSessionResponse;
   Boolean: Scalars['Boolean'];
 };
 
@@ -218,11 +236,16 @@ export type VpnSessionResolvers<ContextType = any, ParentType extends ResolversP
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   vpnCreateSession?: Resolver<ResolversTypes['VpnCreateSessionResponse'], ParentType, ContextType, RequireFields<MutationVpnCreateSessionArgs, 'request'>>;
-  vpnDeleteSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  vpnDeleteSession?: Resolver<ResolversTypes['VpnDeleteSessionResponse'], ParentType, ContextType, RequireFields<MutationVpnDeleteSessionArgs, 'request'>>;
 };
 
 export type VpnCreateSessionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnCreateSessionResponse'] = ResolversParentTypes['VpnCreateSessionResponse']> = {
   credentials?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type VpnDeleteSessionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnDeleteSessionResponse'] = ResolversParentTypes['VpnDeleteSessionResponse']> = {
   status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -234,6 +257,7 @@ export type Resolvers<ContextType = any> = {
   VpnSession?: VpnSessionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   VpnCreateSessionResponse?: VpnCreateSessionResponseResolvers<ContextType>;
+  VpnDeleteSessionResponse?: VpnDeleteSessionResponseResolvers<ContextType>;
 };
 
 
