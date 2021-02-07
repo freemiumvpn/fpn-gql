@@ -1,3 +1,7 @@
+extend type Subscription {
+  vpn: VpnSession!
+}
+
 enum VpnSessionStatus {
   NONE
 
@@ -43,7 +47,7 @@ type VpnSession {
 
 type Mutation {
   vpnCreateSession(request: VpnCreateSessionRequest!): VpnCreateSessionResponse!
-  vpnDeleteSession: VpnSessionStatus!
+  vpnDeleteSession(request: VpnDeleteSessionRequest!): VpnDeleteSessionResponse!
 }
 
 input VpnCreateSessionRequest {
@@ -55,6 +59,10 @@ type VpnCreateSessionResponse {
   status: VpnSessionStatus!
 }
 
-extend type Subscription {
-  vpn: VpnSession!
+input VpnDeleteSessionRequest {
+  userId: String!
+}
+
+type VpnDeleteSessionResponse {
+  status: VpnSessionStatus!
 }

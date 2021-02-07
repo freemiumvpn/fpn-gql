@@ -3,6 +3,7 @@ import getEnv from '../../env'
 import {
   Resolvers,
   VpnCreateSessionResponse,
+  VpnDeleteSessionResponse,
   VpnSession,
   VpnSessionStatus,
 } from '../../generated/graphql'
@@ -18,13 +19,13 @@ const vpnResolvers: Resolvers<ContextApp> = {
       parent,
       args
     ): Promise<VpnCreateSessionResponse> => {
-      vpnSession$.next({
-        __typename: 'VpnSession',
-        id: '',
-        status: VpnSessionStatus.ConnectRequestSent,
-      })
-
       try {
+        vpnSession$.next({
+          __typename: 'VpnSession',
+          id: '',
+          status: VpnSessionStatus.ConnectRequestSent,
+        })
+
         const vpnGrpc = new VpnGrpc(env.grpc.vpn)
         const response = await vpnGrpc.createClient(args.request.userId)
         const credentials = response.getCredentials()
@@ -32,12 +33,24 @@ const vpnResolvers: Resolvers<ContextApp> = {
         const buff = Buffer.from(credentials, 'utf-8')
         const credentialsToBase64 = buff.toString('base64')
 
+        vpnSession$.next({
+          __typename: 'VpnSession',
+          id: '',
+          status: VpnSessionStatus.ConnectRequestApproved,
+        })
+
         return {
           __typename: 'VpnCreateSessionResponse',
           credentials: credentialsToBase64,
           status: VpnSessionStatus.ConnectRequestApproved,
         }
       } catch (error) {
+        vpnSession$.next({
+          __typename: 'VpnSession',
+          id: '',
+          status: VpnSessionStatus.ConnectRequestError,
+        })
+
         return {
           __typename: 'VpnCreateSessionResponse',
           credentials: '',
@@ -45,13 +58,30 @@ const vpnResolvers: Resolvers<ContextApp> = {
         }
       }
     },
-    vpnDeleteSession: (): VpnSessionStatus => {
-      vpnSession$.next({
-        __typename: 'VpnSession',
-        id: '',
-        status: VpnSessionStatus.Disconnected,
-      })
-      return VpnSessionStatus.Disconnected
+    vpnDeleteSession: async (
+      parent,
+      args
+    ): Promise<VpnDeleteSessionResponse> => {
+      try {
+        vpnSession$.next({
+          __typename: 'VpnSession',
+          id: '',
+          status: VpnSessionStatus.DeleteRequestSent,
+        })
+
+        const vpnGrpc = new VpnGrpc(env.grpc.vpn)
+        await vpnGrpc.deleteClient(args.request.userId)
+
+        return {
+          __typename: 'VpnDeleteSessionResponse',
+          status: VpnSessionStatus.DeleteRequestApproved,
+        }
+      } catch (error) {
+        return {
+          __typename: 'VpnDeleteSessionResponse',
+          status: VpnSessionStatus.DeleteRequestError,
+        }
+      }
     },
   },
   Subscription: {
