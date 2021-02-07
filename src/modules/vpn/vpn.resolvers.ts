@@ -6,7 +6,6 @@ import {
   VpnSession,
   VpnSessionStatus,
 } from '../../generated/graphql'
-import { logger } from '../../middlewares/logger/Logger'
 import observableToIterator from '../../utils/observableToIterator'
 
 import { VpnGrpc } from './vpn.grpc'
@@ -22,7 +21,7 @@ const vpnResolvers: Resolvers<ContextApp> = {
       vpnSession$.next({
         __typename: 'VpnSession',
         id: '',
-        status: VpnSessionStatus.Connected,
+        status: VpnSessionStatus.ConnectRequestSent,
       })
 
       try {
@@ -39,7 +38,6 @@ const vpnResolvers: Resolvers<ContextApp> = {
           status: VpnSessionStatus.ConnectRequestApproved,
         }
       } catch (error) {
-        logger.error(error)
         return {
           __typename: 'VpnCreateSessionResponse',
           credentials: '',
