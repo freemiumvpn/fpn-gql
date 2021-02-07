@@ -37,9 +37,30 @@ export type SubscriptionPingArgs = {
 
 export enum VpnSessionStatus {
   None = 'NONE',
+  CreateRequestSent = 'CREATE_REQUEST_SENT',
+  CreateRequestAcknowledged = 'CREATE_REQUEST_ACKNOWLEDGED',
+  CreateRequestApproved = 'CREATE_REQUEST_APPROVED',
+  CreateRequestDenied = 'CREATE_REQUEST_DENIED',
+  CreateRequestError = 'CREATE_REQUEST_ERROR',
+  ConnectRequestSent = 'CONNECT_REQUEST_SENT',
+  ConnectRequestAcknowledged = 'CONNECT_REQUEST_ACKNOWLEDGED',
+  ConnectRequestApproved = 'CONNECT_REQUEST_APPROVED',
+  ConnectRequestDenied = 'CONNECT_REQUEST_DENIED',
+  ConnectRequestError = 'CONNECT_REQUEST_ERROR',
+  DisconnectRequestSent = 'DISCONNECT_REQUEST_SENT',
+  DisconnectRequestAcknowledged = 'DISCONNECT_REQUEST_ACKNOWLEDGED',
+  DisconnectRequestApproved = 'DISCONNECT_REQUEST_APPROVED',
+  DisconnectRequestDenied = 'DISCONNECT_REQUEST_DENIED',
+  DisconnectRequestError = 'DISCONNECT_REQUEST_ERROR',
+  DeleteRequestSent = 'DELETE_REQUEST_SENT',
+  DeleteRequestAcknowledged = 'DELETE_REQUEST_ACKNOWLEDGED',
+  DeleteRequestApproved = 'DELETE_REQUEST_APPROVED',
+  DeleteRequestDenied = 'DELETE_REQUEST_DENIED',
+  DeleteRequestError = 'DELETE_REQUEST_ERROR',
+  Idle = 'IDLE',
   Connected = 'CONNECTED',
   Disconnected = 'DISCONNECTED',
-  Expired = 'EXPIRED'
+  Error = 'ERROR'
 }
 
 export type VpnSession = {
@@ -50,8 +71,23 @@ export type VpnSession = {
 
 export type Mutation = {
   __typename: 'Mutation';
-  vpnCreateSession: VpnSessionStatus;
+  vpnCreateSession: VpnCreateSessionResponse;
   vpnDeleteSession: VpnSessionStatus;
+};
+
+
+export type MutationVpnCreateSessionArgs = {
+  request: VpnCreateSessionRequest;
+};
+
+export type VpnCreateSessionRequest = {
+  userId: Scalars['String'];
+};
+
+export type VpnCreateSessionResponse = {
+  __typename: 'VpnCreateSessionResponse';
+  credentials: Scalars['String'];
+  status: VpnSessionStatus;
 };
 
 
@@ -140,6 +176,8 @@ export type ResolversTypes = {
   VpnSessionStatus: VpnSessionStatus;
   VpnSession: ResolverTypeWrapper<VpnSession>;
   Mutation: ResolverTypeWrapper<{}>;
+  VpnCreateSessionRequest: VpnCreateSessionRequest;
+  VpnCreateSessionResponse: ResolverTypeWrapper<VpnCreateSessionResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -152,6 +190,8 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   VpnSession: VpnSession;
   Mutation: {};
+  VpnCreateSessionRequest: VpnCreateSessionRequest;
+  VpnCreateSessionResponse: VpnCreateSessionResponse;
   Boolean: Scalars['Boolean'];
 };
 
@@ -177,8 +217,14 @@ export type VpnSessionResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  vpnCreateSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  vpnCreateSession?: Resolver<ResolversTypes['VpnCreateSessionResponse'], ParentType, ContextType, RequireFields<MutationVpnCreateSessionArgs, 'request'>>;
   vpnDeleteSession?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+};
+
+export type VpnCreateSessionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnCreateSessionResponse'] = ResolversParentTypes['VpnCreateSessionResponse']> = {
+  credentials?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
@@ -187,6 +233,7 @@ export type Resolvers<ContextType = any> = {
   Subscription?: SubscriptionResolvers<ContextType>;
   VpnSession?: VpnSessionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  VpnCreateSessionResponse?: VpnCreateSessionResponseResolvers<ContextType>;
 };
 
 

@@ -1,22 +1,49 @@
 import { ContextApp } from '../../context/createContext'
+import getEnv from '../../env'
 import {
   Resolvers,
+  VpnCreateSessionResponse,
   VpnSession,
   VpnSessionStatus,
 } from '../../generated/graphql'
 import observableToIterator from '../../utils/observableToIterator'
 
+import { VpnGrpc } from './vpn.grpc'
 import { vpnSession$ } from './vpn.streams'
+const env = getEnv()
 
 const vpnResolvers: Resolvers<ContextApp> = {
   Mutation: {
-    vpnCreateSession: (): VpnSessionStatus => {
+    vpnCreateSession: async (
+      parent,
+      args
+    ): Promise<VpnCreateSessionResponse> => {
       vpnSession$.next({
         __typename: 'VpnSession',
         id: '',
-        status: VpnSessionStatus.Connected,
+        status: VpnSessionStatus.ConnectRequestSent,
       })
-      return VpnSessionStatus.Connected
+
+      try {
+        const vpnGrpc = new VpnGrpc(env.grpc.vpn)
+        const response = await vpnGrpc.createClient(args.request.userId)
+        const credentials = response.getCredentials()
+
+        const buff = Buffer.from(credentials, 'utf-8')
+        const credentialsToBase64 = buff.toString('base64')
+
+        return {
+          __typename: 'VpnCreateSessionResponse',
+          credentials: credentialsToBase64,
+          status: VpnSessionStatus.ConnectRequestApproved,
+        }
+      } catch (error) {
+        return {
+          __typename: 'VpnCreateSessionResponse',
+          credentials: '',
+          status: VpnSessionStatus.ConnectRequestError,
+        }
+      }
     },
     vpnDeleteSession: (): VpnSessionStatus => {
       vpnSession$.next({
