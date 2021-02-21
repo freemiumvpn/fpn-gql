@@ -23,7 +23,12 @@ enum EnvVar {
   AUTH0_ISSUER = 'AUTH0_ISSUER',
   AUTH0_JWKS = 'AUTH0_JWKS',
 
+  /**
+   * APP
+   */
   APP_PORT = 'APP_PORT',
+  APP_SIGNED_URL_SECRET = 'APP_SIGNED_URL_SECRET',
+
   /**
    * GRPC
    */
@@ -33,6 +38,7 @@ enum EnvVar {
 interface Env {
   app: {
     port: string
+    signedUrlSecret: string
   }
   auth0: {
     uri: string
@@ -85,6 +91,7 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
     },
     app: {
       port: env.APP_PORT || '',
+      signedUrlSecret: env.APP_SIGNED_URL_SECRET || '',
     },
     grpc: {
       vpn: env.GRPC_VPN_ADDRESS || 'localhost:8989',
@@ -94,4 +101,4 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
 
 const getEnv = memoise(createEnvVars)
 
-export { parseEnv, createEnvVars, getEnv as default }
+export { parseEnv, createEnvVars, getEnv }
