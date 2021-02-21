@@ -1,7 +1,7 @@
 import { AuthenticationError, ExpressContext } from 'apollo-server-express'
 import { JSONWebKeySet } from 'jose'
 
-import getEnv from '../../env'
+import { getEnv } from '../../env'
 import { errorHandler, ErrorHandler } from '../error/ErrorHandler'
 import { ErrorType } from '../error/ErrorType'
 

@@ -1,5 +1,5 @@
-extend type Subscription {
-  vpn: VpnSession!
+extend type Query {
+  vpnSignedUrl: String!
 }
 
 enum VpnSessionStatus {
@@ -38,31 +38,4 @@ enum VpnSessionStatus {
   CONNECTED
   DISCONNECTED
   ERROR
-}
-
-type VpnSession {
-  id: String!
-  status: VpnSessionStatus!
-}
-
-type Mutation {
-  vpnCreateSession(request: VpnCreateSessionRequest!): VpnCreateSessionResponse!
-  vpnDeleteSession(request: VpnDeleteSessionRequest!): VpnDeleteSessionResponse!
-}
-
-input VpnCreateSessionRequest {
-  userId: String!
-}
-
-type VpnCreateSessionResponse {
-  credentials: String!
-  status: VpnSessionStatus!
-}
-
-input VpnDeleteSessionRequest {
-  userId: String!
-}
-
-type VpnDeleteSessionResponse {
-  status: VpnSessionStatus!
 }
