@@ -29,7 +29,8 @@
     "pino": "^6.11.0",
     "pino-pretty": "^4.3.0",
     "rxjs": "^6.6.3",
-    "signed": "^1.0.3"
+    "signed": "^1.0.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -51,6 +52,7 @@
     "@types/graphql": "^14.5.0",
     "@types/jest": "^26.0.20",
     "@types/pino": "^6.3.5",
+    "@types/uuid": "^8.3.0",
     "@types/webpack-env": "^1.16.0",
     "@types/webpack-node-externals": "^2.5.0",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
