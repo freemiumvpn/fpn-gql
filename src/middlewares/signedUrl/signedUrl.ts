@@ -1,16 +1,17 @@
-import signed from 'signed'
-
 import { getEnv } from '../../env'
 
-const env = getEnv()
+import { Signature } from './Signature'
 
 const TWO_MINUTES = 60 * 2
+const {
+  app: { signedUrlSecret },
+} = getEnv()
 
 /**
  * singed URL singleton
  */
-const signedUrl = signed({
-  secret: env.app.signedUrlSecret,
+const signedUrl = new Signature({
+  secret: signedUrlSecret,
   ttl: TWO_MINUTES,
 })
 
