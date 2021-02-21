@@ -22,12 +22,12 @@ export type Ping = {
 export type Query = {
   __typename: 'Query';
   ping: Ping;
+  vpnSignedUrl: Scalars['String'];
 };
 
 export type Subscription = {
   __typename: 'Subscription';
   ping: Ping;
-  vpn: VpnSession;
 };
 
 
@@ -62,47 +62,6 @@ export enum VpnSessionStatus {
   Disconnected = 'DISCONNECTED',
   Error = 'ERROR'
 }
-
-export type VpnSession = {
-  __typename: 'VpnSession';
-  id: Scalars['String'];
-  status: VpnSessionStatus;
-};
-
-export type Mutation = {
-  __typename: 'Mutation';
-  vpnCreateSession: VpnCreateSessionResponse;
-  vpnDeleteSession: VpnDeleteSessionResponse;
-};
-
-
-export type MutationVpnCreateSessionArgs = {
-  request: VpnCreateSessionRequest;
-};
-
-
-export type MutationVpnDeleteSessionArgs = {
-  request: VpnDeleteSessionRequest;
-};
-
-export type VpnCreateSessionRequest = {
-  userId: Scalars['String'];
-};
-
-export type VpnCreateSessionResponse = {
-  __typename: 'VpnCreateSessionResponse';
-  credentials: Scalars['String'];
-  status: VpnSessionStatus;
-};
-
-export type VpnDeleteSessionRequest = {
-  userId: Scalars['String'];
-};
-
-export type VpnDeleteSessionResponse = {
-  __typename: 'VpnDeleteSessionResponse';
-  status: VpnSessionStatus;
-};
 
 
 
@@ -188,12 +147,6 @@ export type ResolversTypes = {
   Subscription: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   VpnSessionStatus: VpnSessionStatus;
-  VpnSession: ResolverTypeWrapper<VpnSession>;
-  Mutation: ResolverTypeWrapper<{}>;
-  VpnCreateSessionRequest: VpnCreateSessionRequest;
-  VpnCreateSessionResponse: ResolverTypeWrapper<VpnCreateSessionResponse>;
-  VpnDeleteSessionRequest: VpnDeleteSessionRequest;
-  VpnDeleteSessionResponse: ResolverTypeWrapper<VpnDeleteSessionResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -204,12 +157,6 @@ export type ResolversParentTypes = {
   Query: {};
   Subscription: {};
   Int: Scalars['Int'];
-  VpnSession: VpnSession;
-  Mutation: {};
-  VpnCreateSessionRequest: VpnCreateSessionRequest;
-  VpnCreateSessionResponse: VpnCreateSessionResponse;
-  VpnDeleteSessionRequest: VpnDeleteSessionRequest;
-  VpnDeleteSessionResponse: VpnDeleteSessionResponse;
   Boolean: Scalars['Boolean'];
 };
 
@@ -221,43 +168,17 @@ export type PingResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ping?: Resolver<ResolversTypes['Ping'], ParentType, ContextType>;
+  vpnSignedUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'minutes'>>;
-  vpn?: SubscriptionResolver<ResolversTypes['VpnSession'], "vpn", ParentType, ContextType>;
-};
-
-export type VpnSessionResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnSession'] = ResolversParentTypes['VpnSession']> = {
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  vpnCreateSession?: Resolver<ResolversTypes['VpnCreateSessionResponse'], ParentType, ContextType, RequireFields<MutationVpnCreateSessionArgs, 'request'>>;
-  vpnDeleteSession?: Resolver<ResolversTypes['VpnDeleteSessionResponse'], ParentType, ContextType, RequireFields<MutationVpnDeleteSessionArgs, 'request'>>;
-};
-
-export type VpnCreateSessionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnCreateSessionResponse'] = ResolversParentTypes['VpnCreateSessionResponse']> = {
-  credentials?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type VpnDeleteSessionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['VpnDeleteSessionResponse'] = ResolversParentTypes['VpnDeleteSessionResponse']> = {
-  status?: Resolver<ResolversTypes['VpnSessionStatus'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
-  VpnSession?: VpnSessionResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  VpnCreateSessionResponse?: VpnCreateSessionResponseResolvers<ContextType>;
-  VpnDeleteSessionResponse?: VpnDeleteSessionResponseResolvers<ContextType>;
 };
 
 

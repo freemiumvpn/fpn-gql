@@ -6,10 +6,11 @@ import bodyParser from 'body-parser'
 import expressPino from 'express-pino-logger'
 
 import { appConfig } from './app'
-import getEnv from './env'
+import { getEnv } from './env'
 import { errorHandler } from './middlewares/error/ErrorHandler'
 import { ErrorType } from './middlewares/error/ErrorType'
 import { logger, LoggerLevel } from './middlewares/logger/Logger'
+import { vpnRouter } from './routes/vpn'
 
 const {
   app: { port },
@@ -35,6 +36,11 @@ app.use((err: undefined, req: unknown, res: unknown, next: () => void) => {
   }
   next()
 })
+
+/**
+ * Routes
+ */
+app.use('/vpn', vpnRouter)
 
 /**
  * Apollo

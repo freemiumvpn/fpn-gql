@@ -1,5 +1,6 @@
 import path from 'path'
 
+import * as uuid from 'uuid'
 import dotenv from 'dotenv'
 
 import memoise from './utils/memoise'
@@ -23,7 +24,13 @@ enum EnvVar {
   AUTH0_ISSUER = 'AUTH0_ISSUER',
   AUTH0_JWKS = 'AUTH0_JWKS',
 
+  /**
+   * APP
+   */
+  APP_URL = 'APP_URL',
   APP_PORT = 'APP_PORT',
+  APP_SIGNED_URL_SECRET = 'APP_SIGNED_URL_SECRET',
+
   /**
    * GRPC
    */
@@ -32,7 +39,9 @@ enum EnvVar {
 
 interface Env {
   app: {
+    url: string
     port: string
+    signedUrlSecret: string
   }
   auth0: {
     uri: string
@@ -84,7 +93,9 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
       jwks: env.AUTH0_JWKS || '',
     },
     app: {
+      url: env.APP_URL || `http://localhost:${env.APP_PORT}`,
       port: env.APP_PORT || '',
+      signedUrlSecret: env.APP_SIGNED_URL_SECRET || uuid.v4(),
     },
     grpc: {
       vpn: env.GRPC_VPN_ADDRESS || 'localhost:8989',
@@ -94,4 +105,4 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
 
 const getEnv = memoise(createEnvVars)
 
-export { parseEnv, createEnvVars, getEnv as default }
+export { parseEnv, createEnvVars, getEnv }
