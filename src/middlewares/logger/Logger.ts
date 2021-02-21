@@ -2,11 +2,12 @@ import pino from 'pino'
 
 enum LoggerLevel {
   SILENT = 'silent',
-  INFO = 'info',
-  WARN = 'warn',
-  TRACE = 'trace',
-  ERROR = 'error',
   FATAL = 'fatal',
+  ERROR = 'error',
+  WARN = 'warn',
+  INFO = 'info',
+  DEBUG = 'debug',
+  TRACE = 'trace',
 }
 
 const logger = pino({
