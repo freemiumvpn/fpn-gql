@@ -1,0 +1,12 @@
+extend type Query {
+    user(userId: String!): User!
+}
+
+extend type Mutation {
+    userSendVerification(userId: String!): Boolean!
+}
+
+type User {
+    id: String!
+    emailVerified: Boolean!
+}
