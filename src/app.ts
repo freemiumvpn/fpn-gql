@@ -10,15 +10,18 @@ import createContext from './context/createContext'
 import { logger } from './middlewares/logger/Logger'
 import vpnModule from './modules/vpn/vpn.module'
 import { auth } from './middlewares/auth/Auth'
+import userModule from './modules/user/user.module'
 
 const appConfig: ApolloServerExpressConfig = {
   resolvers: deepmerge.all([
     pingModule.resolvers,
     vpnModule.resolvers,
+    userModule.resolvers,
   ]) as IResolvers,
   typeDefs: gql`
     ${pingModule.typeDefs}
     ${vpnModule.typeDefs}
+    ${userModule.typeDefs}
   `,
   context: createContext,
   logger,
