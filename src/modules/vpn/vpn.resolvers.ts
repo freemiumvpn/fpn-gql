@@ -1,4 +1,4 @@
-import { ContextApp } from '../../context/createContext'
+import { ContextApp } from '../../context/Context'
 import { getEnv } from '../../env'
 import { Resolvers } from '../../generated/graphql'
 import { signedUrl } from '../../middlewares/signedUrl/signedUrl'
@@ -10,7 +10,7 @@ const {
 const vpnResolvers: Resolvers<ContextApp> = {
   Query: {
     vpnSignedUrl: async (parent, args, context): Promise<string> => {
-      const userId = context.token.decodedToken.payload.sub
+      const userId = context.sessionToken.decodedToken.payload.sub
 
       const downloadUrl = new URL(`${url}/vpn/download?userId=${userId}`)
 

@@ -22,7 +22,13 @@ export type Ping = {
 export type Query = {
   __typename: 'Query';
   ping: Ping;
+  user: User;
   vpnSignedUrl: Scalars['String'];
+};
+
+
+export type QueryUserArgs = {
+  userId: Scalars['String'];
 };
 
 export type Subscription = {
@@ -33,6 +39,12 @@ export type Subscription = {
 
 export type SubscriptionPingArgs = {
   minutes: Scalars['Int'];
+};
+
+export type User = {
+  __typename: 'User';
+  id: Scalars['String'];
+  verified: Scalars['Boolean'];
 };
 
 export enum VpnSessionStatus {
@@ -146,8 +158,9 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Subscription: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  VpnSessionStatus: VpnSessionStatus;
+  User: ResolverTypeWrapper<User>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  VpnSessionStatus: VpnSessionStatus;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -157,6 +170,7 @@ export type ResolversParentTypes = {
   Query: {};
   Subscription: {};
   Int: Scalars['Int'];
+  User: User;
   Boolean: Scalars['Boolean'];
 };
 
@@ -168,6 +182,7 @@ export type PingResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ping?: Resolver<ResolversTypes['Ping'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'userId'>>;
   vpnSignedUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -175,10 +190,17 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
   ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'minutes'>>;
 };
 
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  verified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 
 
