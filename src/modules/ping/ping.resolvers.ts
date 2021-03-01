@@ -1,4 +1,4 @@
-import { ContextApp } from '../../context/createContext'
+import { ContextApp } from '../../context/Context'
 import {
   Ping,
   RequireFields,

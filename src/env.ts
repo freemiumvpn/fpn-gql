@@ -25,6 +25,15 @@ enum EnvVar {
   AUTH0_JWKS = 'AUTH0_JWKS',
 
   /**
+   * AUTH0 API
+   */
+  AUTH0_API_URL = 'AUTH0_API_URL',
+  AUTH0_API_CLIENT_ID = 'AUTH0_API_CLIENT_ID',
+  AUTH0_API_CLIENT_SECRET = 'AUTH0_API_CLIENT_SECRET',
+  AUTH0_API_AUDIENCE = 'AUTH0_API_AUDIENCE',
+  AUTH0_API_GRANT_TYPE = 'AUTH0_API_GRANT_TYPE',
+
+  /**
    * APP
    */
   APP_URL = 'APP_URL',
@@ -48,6 +57,13 @@ interface Env {
     audience: string
     issuer: string
     jwks: string
+    api: {
+      url: string
+      clientId: string
+      clientSecret: string
+      audience: string
+      grantType: string
+    }
   }
   grpc: {
     vpn: string
@@ -91,6 +107,13 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
       audience: env.AUTH0_AUDIENCE || '',
       issuer: env.AUTH0_ISSUER || '',
       jwks: env.AUTH0_JWKS || '',
+      api: {
+        url: env.AUTH0_API_URL || '',
+        audience: env.AUTH0_API_AUDIENCE || '',
+        clientId: env.AUTH0_API_CLIENT_ID || '',
+        clientSecret: env.AUTH0_API_CLIENT_SECRET || '',
+        grantType: env.AUTH0_API_GRANT_TYPE || '',
+      },
     },
     app: {
       url: env.APP_URL || `http://localhost:${env.APP_PORT}`,

@@ -6,13 +6,15 @@ import {
 } from 'apollo-server-express/dist/ApolloServer'
 
 import pingModule from './modules/ping/ping.module'
-import createContext from './context/createContext'
 import { logger } from './middlewares/logger/Logger'
 import vpnModule from './modules/vpn/vpn.module'
 import { auth } from './middlewares/auth/Auth'
 import userModule from './modules/user/user.module'
+import { errorHandler } from './middlewares/error/ErrorHandler'
+import { Context } from './context/Context'
 
 const appConfig: ApolloServerExpressConfig = {
+  logger,
   resolvers: deepmerge.all([
     pingModule.resolvers,
     vpnModule.resolvers,
@@ -23,8 +25,14 @@ const appConfig: ApolloServerExpressConfig = {
     ${vpnModule.typeDefs}
     ${userModule.typeDefs}
   `,
-  context: createContext,
-  logger,
+  context: new Context({
+    auth: auth,
+    logger: logger,
+    error: errorHandler,
+    models: {
+      auth0: userModule.models.auth0,
+    },
+  }).create,
   subscriptions: {
     onConnect: async (connectionParams: unknown): Promise<unknown> => {
       const expressContext = ({
