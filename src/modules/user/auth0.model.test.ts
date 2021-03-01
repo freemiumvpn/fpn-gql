@@ -66,7 +66,7 @@ describe('Auth0Model', () => {
     expect(value).toEqual(expected)
   })
 
-  it.only('should only fetch token once', async () => {
+  it('should only fetch token once', async () => {
     const options: AuthOptions = {
       audience: 'foo',
       clientId: 'baz',
