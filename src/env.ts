@@ -20,9 +20,11 @@ enum EnvVar {
    * AUTH0
    */
   AUTH0_URI = 'AUTH0_URI',
-  AUTH0_AUDIENCE = 'AUTH0_AUDIENCE',
   AUTH0_ISSUER = 'AUTH0_ISSUER',
   AUTH0_JWKS = 'AUTH0_JWKS',
+  AUTH0_AUDIENCE = 'AUTH0_AUDIENCE',
+  AUTH0_AUDIENCE_IOS = 'AUTH0_AUDIENCE_IOS',
+  AUTH0_AUDIENCE_WEB = 'AUTH0_AUDIENCE_WEB',
 
   /**
    * AUTH0 API
@@ -54,7 +56,7 @@ interface Env {
   }
   auth0: {
     uri: string
-    audience: string
+    audience: string[]
     issuer: string
     jwks: string
     api: {
@@ -104,7 +106,11 @@ const createEnvVars = (rootPath: string = PATH_ROOT): Env => {
   return {
     auth0: {
       uri: env.AUTH0_URI || '',
-      audience: env.AUTH0_AUDIENCE || '',
+      audience: [
+        env.AUTH0_AUDIENCE || '',
+        env.AUTH0_AUDIENCE_IOS || '',
+        env.AUTH0_AUDIENCE_WEB || '',
+      ],
       issuer: env.AUTH0_ISSUER || '',
       jwks: env.AUTH0_JWKS || '',
       api: {

@@ -11,7 +11,7 @@ import {
 
 describe('validateAuthRequest', () => {
   const options: ValidateAuthRequestOptions = {
-    audience: 'baz',
+    audience: ['baz'],
     issuer: 'http://gizmodo',
     algorithms: ['HS256' as Algorithm],
     secret: 'foo',
@@ -20,7 +20,7 @@ describe('validateAuthRequest', () => {
 
   it('should check for secret or public key', async () => {
     const options = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
     }
@@ -181,7 +181,7 @@ describe('validateAuthRequest', () => {
 
   it('should be able to resolve public key', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
       publicKey: jest.fn(),
@@ -205,7 +205,7 @@ describe('validateAuthRequest', () => {
 
   it('should be able to check public key errors', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
       publicKey: jest.fn().mockImplementation(() => {
@@ -244,7 +244,7 @@ describe('validateAuthRequest', () => {
   it('should verify toke against secret', async () => {
     const options: ValidateAuthRequestOptions = {
       secret: 'foo',
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
       publicKey: jest.fn().mockImplementation(() => {
@@ -279,7 +279,7 @@ describe('validateAuthRequest', () => {
 
   it('should check secret resolution', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
       publicKey: jest.fn().mockImplementation(() => {
@@ -314,7 +314,7 @@ describe('validateAuthRequest', () => {
 
   it('should verify token', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
       secret: 'foo',
@@ -345,7 +345,7 @@ describe('validateAuthRequest', () => {
   it('should verify toke against secret', async () => {
     const options: ValidateAuthRequestOptions = {
       secret: 'foo',
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmo',
       algorithms: ['HS256' as Algorithm],
       publicKey: jest.fn().mockImplementation(() => {
@@ -380,7 +380,7 @@ describe('validateAuthRequest', () => {
 
   it('should check if token is expired', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
       secret: 'foo',
@@ -414,7 +414,7 @@ describe('validateAuthRequest', () => {
 
   it('should check if audience is incorrect', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
       secret: 'foo',
@@ -449,10 +449,36 @@ describe('validateAuthRequest', () => {
     expect(context).toEqual(expected)
   })
 
+  it('should allow for multiple audiences', async () => {
+    const options: ValidateAuthRequestOptions = {
+      audience: ['baz', '', 'foo'],
+      issuer: 'https://issuer.com',
+      algorithms: ['HS256' as Algorithm],
+      secret: 'foo',
+    }
+
+    const token = jwt.sign({ foo: 'bar', aud: 'foo' }, options.secret as string)
+
+    const expressContext = {
+      req: {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      },
+    }
+
+    const context = await validateAuthRequest(options)(
+      expressContext as ExpressContext
+    )
+
+    expect(context.token).toBeTruthy()
+    expect(context.decodedToken).toBeTruthy()
+  })
+
   // not checking for issuer anymore
   it.skip('should check if issuer is incorrect', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
       secret: 'foo',
@@ -489,7 +515,7 @@ describe('validateAuthRequest', () => {
 
   it('should return token', async () => {
     const options: ValidateAuthRequestOptions = {
-      audience: 'baz',
+      audience: ['baz'],
       issuer: 'http://gizmodo',
       algorithms: ['HS256' as Algorithm],
       secret: 'foo',

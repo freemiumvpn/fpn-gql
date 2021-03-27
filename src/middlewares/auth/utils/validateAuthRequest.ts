@@ -13,7 +13,7 @@ interface ValidateAuthRequestResponse {
 }
 
 interface ValidateAuthRequestOptions {
-  audience: string
+  audience: string[]
   /**
    * @deprecated
    * seems like issuer is not needed
