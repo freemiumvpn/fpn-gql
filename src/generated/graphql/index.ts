@@ -47,16 +47,6 @@ export type SubscriptionPingArgs = {
   minutes: Scalars['Int'];
 };
 
-export type Mutation = {
-  __typename: 'Mutation';
-  userSendEmailVerification: Scalars['Boolean'];
-};
-
-
-export type MutationUserSendEmailVerificationArgs = {
-  userId: Scalars['String'];
-};
-
 export type User = {
   __typename: 'User';
   id: Scalars['String'];
@@ -179,9 +169,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Subscription: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Mutation: ResolverTypeWrapper<{}>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   User: ResolverTypeWrapper<User>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Vpn: ResolverTypeWrapper<Vpn>;
   VpnSessionStatus: VpnSessionStatus;
 };
@@ -193,9 +182,8 @@ export type ResolversParentTypes = {
   Query: {};
   Subscription: {};
   Int: Scalars['Int'];
-  Mutation: {};
-  Boolean: Scalars['Boolean'];
   User: User;
+  Boolean: Scalars['Boolean'];
   Vpn: Vpn;
 };
 
@@ -216,10 +204,6 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
   ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'minutes'>>;
 };
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  userSendEmailVerification?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUserSendEmailVerificationArgs, 'userId'>>;
-};
-
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   verified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -235,7 +219,6 @@ export type Resolvers<ContextType = any> = {
   Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Vpn?: VpnResolvers<ContextType>;
 };
