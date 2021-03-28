@@ -1,10 +1,14 @@
 import { ExpressContext } from 'apollo-server-express'
 import { Logger } from 'pino'
 
+import { getEnv } from '../env'
 import { Auth } from '../middlewares/auth/Auth'
 import { Token } from '../middlewares/auth/Token'
 import { ErrorHandler } from '../middlewares/error/ErrorHandler'
 import { Auth0Model } from '../modules/user/auth0.model'
+import { VpnGrpc } from '../modules/vpn/vpn.grpc'
+
+const env = getEnv()
 
 interface ContextApp {
   logger: Logger
@@ -13,6 +17,7 @@ interface ContextApp {
   sessionToken: Token
   models: {
     auth0: Auth0Model
+    vpn: VpnGrpc
   }
 }
 
@@ -29,6 +34,7 @@ class Context {
       error: this.context.error,
       models: {
         auth0: this.context.models.auth0,
+        vpn: new VpnGrpc(env.grpc.vpn),
       },
     }
   }

@@ -23,12 +23,18 @@ export type Query = {
   __typename: 'Query';
   ping: Ping;
   user: User;
+  vpn?: Maybe<Vpn>;
   vpnSignedUrl: Scalars['String'];
 };
 
 
 export type QueryUserArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryVpnArgs = {
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -41,10 +47,25 @@ export type SubscriptionPingArgs = {
   minutes: Scalars['Int'];
 };
 
+export type Mutation = {
+  __typename: 'Mutation';
+  userSendEmailVerification: Scalars['Boolean'];
+};
+
+
+export type MutationUserSendEmailVerificationArgs = {
+  userId: Scalars['String'];
+};
+
 export type User = {
   __typename: 'User';
   id: Scalars['String'];
   verified: Scalars['Boolean'];
+};
+
+export type Vpn = {
+  __typename: 'Vpn';
+  configuration: Scalars['String'];
 };
 
 export enum VpnSessionStatus {
@@ -158,8 +179,10 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Subscription: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  User: ResolverTypeWrapper<User>;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  User: ResolverTypeWrapper<User>;
+  Vpn: ResolverTypeWrapper<Vpn>;
   VpnSessionStatus: VpnSessionStatus;
 };
 
@@ -170,8 +193,10 @@ export type ResolversParentTypes = {
   Query: {};
   Subscription: {};
   Int: Scalars['Int'];
-  User: User;
+  Mutation: {};
   Boolean: Scalars['Boolean'];
+  User: User;
+  Vpn: Vpn;
 };
 
 export type PingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ping'] = ResolversParentTypes['Ping']> = {
@@ -183,11 +208,16 @@ export type PingResolvers<ContextType = any, ParentType extends ResolversParentT
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ping?: Resolver<ResolversTypes['Ping'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'userId'>>;
+  vpn?: Resolver<Maybe<ResolversTypes['Vpn']>, ParentType, ContextType, RequireFields<QueryVpnArgs, never>>;
   vpnSignedUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   ping?: SubscriptionResolver<ResolversTypes['Ping'], "ping", ParentType, ContextType, RequireFields<SubscriptionPingArgs, 'minutes'>>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  userSendEmailVerification?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUserSendEmailVerificationArgs, 'userId'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -196,11 +226,18 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type VpnResolvers<ContextType = any, ParentType extends ResolversParentTypes['Vpn'] = ResolversParentTypes['Vpn']> = {
+  configuration?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Vpn?: VpnResolvers<ContextType>;
 };
 
 

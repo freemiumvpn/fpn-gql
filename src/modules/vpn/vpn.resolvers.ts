@@ -1,6 +1,6 @@
 import { ContextApp } from '../../context/Context'
 import { getEnv } from '../../env'
-import { Resolvers } from '../../generated/graphql'
+import { Resolvers, Vpn } from '../../generated/graphql'
 import { signedUrl } from '../../middlewares/signedUrl/signedUrl'
 
 const {
@@ -9,6 +9,35 @@ const {
 
 const vpnResolvers: Resolvers<ContextApp> = {
   Query: {
+    vpn: async (parent, args, context): Promise<Vpn> => {
+      if (!args.userId) {
+        return {
+          configuration: '',
+          __typename: 'Vpn',
+        }
+      }
+
+      const { identities } = await context.models.auth0.getUser(args.userId)
+
+      const needsEmailVerification = identities.find(
+        (i) => i.connection === 'Username-Password-Authentication'
+      )
+
+      if (needsEmailVerification) {
+        return {
+          configuration: '',
+          __typename: 'Vpn',
+        }
+      }
+
+      const response = await context.models.vpn.createClient(args.userId)
+      const configuration = response.getCredentials()
+
+      return {
+        configuration,
+        __typename: 'Vpn',
+      }
+    },
     vpnSignedUrl: async (parent, args, context): Promise<string> => {
       const userId = context.sessionToken.decodedToken.payload.sub
 
