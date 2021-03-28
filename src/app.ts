@@ -10,8 +10,12 @@ import { logger } from './middlewares/logger/Logger'
 import vpnModule from './modules/vpn/vpn.module'
 import { auth } from './middlewares/auth/Auth'
 import userModule from './modules/user/user.module'
+import { VpnGrpc } from './modules/vpn/vpn.grpc'
 import { errorHandler } from './middlewares/error/ErrorHandler'
 import { Context } from './context/Context'
+import { getEnv } from './env'
+
+const env = getEnv()
 
 const appConfig: ApolloServerExpressConfig = {
   logger,
@@ -31,6 +35,7 @@ const appConfig: ApolloServerExpressConfig = {
     error: errorHandler,
     models: {
       auth0: userModule.models.auth0,
+      vpn: new VpnGrpc(env.grpc.vpn),
     },
   }).create,
   subscriptions: {
