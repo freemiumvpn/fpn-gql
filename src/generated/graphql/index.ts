@@ -23,12 +23,18 @@ export type Query = {
   __typename: 'Query';
   ping: Ping;
   user: User;
+  vpn: Vpn;
   vpnSignedUrl: Scalars['String'];
 };
 
 
 export type QueryUserArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryVpnArgs = {
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -45,6 +51,11 @@ export type User = {
   __typename: 'User';
   id: Scalars['String'];
   verified: Scalars['Boolean'];
+};
+
+export type Vpn = {
+  __typename: 'Vpn';
+  configuration: Scalars['String'];
 };
 
 export enum VpnSessionStatus {
@@ -160,6 +171,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   User: ResolverTypeWrapper<User>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Vpn: ResolverTypeWrapper<Vpn>;
   VpnSessionStatus: VpnSessionStatus;
 };
 
@@ -172,6 +184,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   User: User;
   Boolean: Scalars['Boolean'];
+  Vpn: Vpn;
 };
 
 export type PingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ping'] = ResolversParentTypes['Ping']> = {
@@ -183,6 +196,7 @@ export type PingResolvers<ContextType = any, ParentType extends ResolversParentT
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ping?: Resolver<ResolversTypes['Ping'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'userId'>>;
+  vpn?: Resolver<ResolversTypes['Vpn'], ParentType, ContextType, RequireFields<QueryVpnArgs, never>>;
   vpnSignedUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -196,11 +210,17 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type VpnResolvers<ContextType = any, ParentType extends ResolversParentTypes['Vpn'] = ResolversParentTypes['Vpn']> = {
+  configuration?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Ping?: PingResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Vpn?: VpnResolvers<ContextType>;
 };
 
 
