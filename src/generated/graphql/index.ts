@@ -23,7 +23,7 @@ export type Query = {
   __typename: 'Query';
   ping: Ping;
   user: User;
-  vpn?: Maybe<Vpn>;
+  vpn: Vpn;
   vpnSignedUrl: Scalars['String'];
 };
 
@@ -196,7 +196,7 @@ export type PingResolvers<ContextType = any, ParentType extends ResolversParentT
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ping?: Resolver<ResolversTypes['Ping'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'userId'>>;
-  vpn?: Resolver<Maybe<ResolversTypes['Vpn']>, ParentType, ContextType, RequireFields<QueryVpnArgs, never>>;
+  vpn?: Resolver<ResolversTypes['Vpn'], ParentType, ContextType, RequireFields<QueryVpnArgs, never>>;
   vpnSignedUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 

@@ -6,4 +6,4 @@ type User {
   id: String!
   verified: Boolean!
 }
-  
+
