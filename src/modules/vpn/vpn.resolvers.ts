@@ -17,13 +17,15 @@ const vpnResolvers: Resolvers<ContextApp> = {
         }
       }
 
-      const { identities } = await context.models.auth0.getUser(args.userId)
+      const { identities, emailVerified } = await context.models.auth0.getUser(
+        args.userId
+      )
 
       const needsEmailVerification = identities.find(
         (i) => i.connection === 'Username-Password-Authentication'
       )
 
-      if (needsEmailVerification) {
+      if (needsEmailVerification && !emailVerified) {
         return {
           configuration: '',
           __typename: 'Vpn',
